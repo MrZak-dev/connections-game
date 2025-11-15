@@ -49,14 +49,20 @@ class ConnectionsGame {
             text.setAttribute('y', '50%');
             text.setAttribute('dominant-baseline', 'middle');
             text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('textLength', '90');
-            text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
             text.textContent = word;
             svg.appendChild(text);
             button.appendChild(svg);
+            this.adjustFontSize(button, text, 90);
             button.addEventListener('click', () => this.handleWordClick(button));
             this.gameGrid.appendChild(button);
         });
+    }
+    adjustFontSize(button, text, maxWidth) {
+        const textLength = text.getComputedTextLength();
+        if (textLength > maxWidth) {
+            text.setAttribute('textLength', maxWidth.toString());
+            text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+        }
     }
     handleWordClick(button) {
         const word = button.dataset.word;
