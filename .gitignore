@@ -1,0 +1,33 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+
+# TypeScript
+dist/        # Compiled output directory
+*.js         # Ignore all compiled JavaScript files
+*.d.ts       # Ignore all compiled TypeScript declaration files
+*.tsbuildinfo # TypeScript build output
+
+# Editor/IDE
+.vscode/     # VSCode settings (optional, depending on team preference)
+.idea/       # IntelliJ IDEA settings
+.DS_Store    # macOS specific
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Misc
+*.bak
+*.swp
+
+
+# idea
+.idea/
