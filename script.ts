@@ -51,6 +51,7 @@ class ConnectionsGame {
 
     private renderGrid() {
         this.gameGrid.innerHTML = '';
+        const buttons: { button: HTMLButtonElement, text: SVGTextElement }[] = [];
         this.words.forEach(word => {
             const button = document.createElement('button');
             button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
@@ -71,10 +72,14 @@ class ConnectionsGame {
             svg.appendChild(text);
             button.appendChild(svg);
 
-            this.adjustFontSize(button, text, 90);
+            buttons.push({ button, text });
 
             button.addEventListener('click', () => this.handleWordClick(button));
             this.gameGrid.appendChild(button);
+        });
+
+        buttons.forEach(({ button, text }) => {
+            this.adjustFontSize(button, text, 90);
         });
     }
 
