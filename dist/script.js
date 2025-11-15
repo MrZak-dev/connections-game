@@ -47,12 +47,13 @@ class ConnectionsGame {
         });
     }
     adjustFontSize(button) {
-        const word = button.textContent;
-        if (word.length > 8) {
-            button.style.fontSize = '0.875rem'; // 14px
-        }
-        else {
-            button.style.fontSize = '1rem'; // 16px
+        const text = button.textContent;
+        const maxWidth = button.offsetWidth - 16; // 16px padding
+        let fontSize = 16; // Start with the base font size
+        button.style.fontSize = `${fontSize}px`;
+        while (button.scrollWidth > maxWidth && fontSize > 10) {
+            fontSize--;
+            button.style.fontSize = `${fontSize}px`;
         }
     }
     handleWordClick(button) {
@@ -192,29 +193,29 @@ class ConnectionsGame {
     showSolvedScreen() {
         const root = document.getElementById('root');
         root.innerHTML = `
-            <main class.ts="flex-grow px-4 py-6 flex flex-col items-center">
+            <main class="flex-grow px-4 py-6 flex flex-col items-center">
                 <!-- Headline Text -->
-                <h1 class.ts="text-3xl font-bold leading-tight tracking-[-0.015em] text-center pb-2">Nicely Done!</h1>
-                <p class.ts="text-center text-gray-600 dark:text-gray-400 mb-6">You found all four connections.</p>
+                <h1 class="text-3xl font-bold leading-tight tracking-[-0.015em] text-center pb-2">Nicely Done!</h1>
+                <p class="text-center text-gray-600 dark:text-gray-400 mb-6">You found all four connections.</p>
                 <!-- Solved Puzzle Grid -->
-                <div class.ts="w-full max-w-md flex flex-col gap-3">
+                <div class="w-full max-w-md flex flex-col gap-3">
                     ${this.getSolvedGroupsHTML()}
                 </div>
                 <!-- Performance Metrics -->
-                <div class.ts="mt-8 text-center">
-                    <p class.ts="text-lg text-gray-700 dark:text-gray-300">Mistakes: <span class.ts="font-bold text-text-light dark:text-text-dark">${4 - this.mistakes}</span></p>
+                <div class="mt-8 text-center">
+                    <p class="text-lg text-gray-700 dark:text-gray-300">Mistakes: <span class="font-bold text-text-light dark:text-text-dark">${4 - this.mistakes}</span></p>
                 </div>
                 <!-- Action Buttons -->
-                <div class.ts="w-full max-w-md mt-8 flex flex-col gap-4">
-                    <button class.ts="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-base font-bold leading-normal text-white">
-                        <span class.ts="material-symbols-outlined">share</span>
+                <div class="w-full max-w-md mt-8 flex flex-col gap-4">
+                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-base font-bold leading-normal text-white">
+                        <span class="material-symbols-outlined">share</span>
                         <span>Share Your Results</span>
                     </button>
-                    <button class.ts="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-bold leading-normal text-text-light dark:text-text-dark hover:bg-gray-100 dark:hover:bg-card-dark">
+                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-bold leading-normal text-text-light dark:text-text-dark hover:bg-gray-100 dark:hover:bg-card-dark">
                         <span>View All Puzzles</span>
                     </button>
                 </div>
-                <div class.ts="h-8"></div> <!-- Spacer -->
+                <div class="h-8"></div> <!-- Spacer -->
             </main>
         `;
     }
@@ -229,9 +230,9 @@ class ConnectionsGame {
         return sortedGroups.map(key => {
             const group = this.solvedGroups[key];
             return `
-                <div class.ts="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
-                    <p class.ts="text-base font-bold leading-tight tracking-[-0.015em] uppercase">${group.description}</p>
-                    <p class.ts="text-lg font-semibold leading-normal uppercase">${group.words.join(', ')}</p>
+                <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
+                    <p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">${group.description}</p>
+                    <p class="text-lg font-semibold leading-normal uppercase">${group.words.join(', ')}</p>
                 </div>
             `;
         }).join('');
