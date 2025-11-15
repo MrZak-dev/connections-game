@@ -3,11 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanilla Project</title>
+    <title>Connections Game</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>Welcome to your vanilla project!</h1>
-    <script src="dist/script.js"></script>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+    <div id="root" class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
+            <!-- Top App Bar -->
+            <header class="flex items-center justify-between py-2">
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">help</span>
+                </button>
+                <div class="flex flex-col items-center">
+                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Puzzle #1</p>
+                </div>
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">menu</span>
+                </button>
+            </header>
+
+            <!-- Solved Groups Area -->
+            <div id="solved-groups" class="my-4 flex flex-col gap-2">
+                <!-- Solved groups will be dynamically added here -->
+            </div>
+
+            <!-- Game Grid -->
+            <div id="game-grid" class="grid grid-cols-4 gap-2 text-center">
+                <!-- Word buttons will be dynamically added here -->
+            </div>
+
+            <!-- Mistakes Counter -->
+            <div class="flex w-full flex-col items-center gap-2 pt-6 pb-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Mistakes remaining:</p>
+                <div id="mistakes-counter" class="flex w-full flex-row items-center justify-center gap-3">
+                    <div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                    <div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                    <div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                    <div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-1 flex-col justify-end pb-4">
+                <div class="flex justify-stretch py-2">
+                    <div class="flex flex-1 flex-wrap justify-center gap-3">
+                        <button id="shuffle-button" class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+                            <span class="truncate">Shuffle</span>
+                        </button>
+                        <button id="deselect-all-button" class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+                            <span class="truncate">Deselect all</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex py-2">
+                    <button id="submit-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-base font-bold leading-normal tracking-[0.015em] opacity-50" disabled>
+                        <span class="truncate">Submit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="dist/script.js"></script>
 </body>
 </html>
