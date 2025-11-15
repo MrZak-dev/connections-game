@@ -49,17 +49,15 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-1 flex-col justify-end pb-4">
-                <div class="flex justify-stretch py-2">
-                    <div class="flex flex-1 flex-wrap justify-center gap-3">
-                        <button id="shuffle-button" class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
-                            <span class="truncate">Shuffle</span>
-                        </button>
-                        <button id="deselect-all-button" class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
-                            <span class="truncate">Deselect all</span>
-                        </button>
-                    </div>
+                <div class="grid grid-cols-2 gap-3 py-2">
+                    <button id="shuffle-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+                        <span class="truncate">Shuffle</span>
+                    </button>
+                    <button id="deselect-all-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+                        <span class="truncate">Deselect all</span>
+                    </button>
                 </div>
-                <div class="flex py-2">
+                 <div class="flex py-2">
                     <button id="submit-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-base font-bold leading-normal tracking-[0.015em] opacity-50" disabled>
                         <span class="truncate">Submit</span>
                     </button>
