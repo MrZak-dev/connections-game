@@ -1,5 +1,3 @@
-import puzzlesData from './puzzles.json' assert { type: 'json' };
-
 interface Puzzle {
     date: string;
     groups: {
@@ -27,8 +25,18 @@ class ConnectionsGame {
     private solvedGroupsContainer: HTMLElement = document.getElementById('solved-groups')!;
 
     constructor() {
-        this.puzzles = puzzlesData.puzzles;
-        this.startNewGame();
+        this.loadPuzzles();
+    }
+
+    private async loadPuzzles() {
+        try {
+            const response = await fetch('puzzles.json');
+            const data = await response.json();
+            this.puzzles = data.puzzles;
+            this.startNewGame();
+        } catch (error) {
+            console.error('Failed to load puzzles:', error);
+        }
     }
 
     private startNewGame() {
@@ -245,7 +253,6 @@ class ConnectionsGame {
     }
 }
 
-// Initialize the game
 document.addEventListener('DOMContentLoaded', () => {
     new ConnectionsGame();
 });

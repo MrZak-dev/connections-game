@@ -1,4 +1,3 @@
-import puzzlesData from './puzzles.json' assert { type: 'json' };
 class ConnectionsGame {
     puzzles = [];
     currentPuzzle = null;
@@ -13,8 +12,18 @@ class ConnectionsGame {
     deselectAllButton = document.getElementById('deselect-all-button');
     solvedGroupsContainer = document.getElementById('solved-groups');
     constructor() {
-        this.puzzles = puzzlesData.puzzles;
-        this.startNewGame();
+        this.loadPuzzles();
+    }
+    async loadPuzzles() {
+        try {
+            const response = await fetch('puzzles.json');
+            const data = await response.json();
+            this.puzzles = data.puzzles;
+            this.startNewGame();
+        }
+        catch (error) {
+            console.error('Failed to load puzzles:', error);
+        }
     }
     startNewGame() {
         if (this.puzzles.length > 0) {
@@ -216,7 +225,6 @@ class ConnectionsGame {
         }).join('');
     }
 }
-// Initialize the game
 document.addEventListener('DOMContentLoaded', () => {
     new ConnectionsGame();
 });
@@ -248,3 +256,4 @@ window.tailwind.config = {
         },
     },
 };
+export {};
