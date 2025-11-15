@@ -54,8 +54,25 @@ class ConnectionsGame {
         this.words.forEach(word => {
             const button = document.createElement('button');
             button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
-            button.textContent = word;
             button.dataset.word = word;
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', '0 0 100 40');
+
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', '50%');
+            text.setAttribute('y', '50%');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('textLength', '90');
+            text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+            text.textContent = word;
+
+            svg.appendChild(text);
+            button.appendChild(svg);
+
             button.addEventListener('click', () => this.handleWordClick(button));
             this.gameGrid.appendChild(button);
         });
@@ -156,7 +173,7 @@ class ConnectionsGame {
 
     private updateMistakesCounter() {
         const dots = this.mistakesCounter.children;
-        for (let i = 0; i > 4; i++) {
+        for (let i = 0; i < 4; i++) {
             if (i < this.mistakes) {
                 dots[i].classList.add('bg-gray-800', 'dark:bg-gray-200');
                 dots[i].classList.remove('bg-gray-400', 'dark:bg-gray-600');
