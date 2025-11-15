@@ -1,8 +1,7 @@
 body {
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.word-button {
+    font-size: clamp(0.75rem, 8cqi, 1rem);
 }

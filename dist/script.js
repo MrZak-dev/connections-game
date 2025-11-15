@@ -38,23 +38,12 @@ class ConnectionsGame {
         this.gameGrid.innerHTML = '';
         this.words.forEach(word => {
             const button = document.createElement('button');
-            button.className = 'flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
+            button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
             button.textContent = word;
             button.dataset.word = word;
-            this.adjustFontSize(button);
             button.addEventListener('click', () => this.handleWordClick(button));
             this.gameGrid.appendChild(button);
         });
-    }
-    adjustFontSize(button) {
-        const text = button.textContent;
-        const maxWidth = button.offsetWidth - 16; // 16px padding
-        let fontSize = 16; // Start with the base font size
-        button.style.fontSize = `${fontSize}px`;
-        while (button.scrollWidth > maxWidth && fontSize > 10) {
-            fontSize--;
-            button.style.fontSize = `${fontSize}px`;
-        }
     }
     handleWordClick(button) {
         const word = button.dataset.word;
@@ -145,7 +134,7 @@ class ConnectionsGame {
     }
     updateMistakesCounter() {
         const dots = this.mistakesCounter.children;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i > 4; i++) {
             if (i < this.mistakes) {
                 dots[i].classList.add('bg-gray-800', 'dark:bg-gray-200');
                 dots[i].classList.remove('bg-gray-400', 'dark:bg-gray-600');
