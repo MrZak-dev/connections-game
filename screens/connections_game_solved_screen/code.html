@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Connections Puzzle Completed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "text-light": "#121212",
+                        "text-dark": "#f0f0f0",
+                        "card-dark": "#1a2230",
+                        "connections-yellow": "#F9DF69",
+                        "connections-green": "#A0C35A",
+                        "connections-blue": "#B5E1EA",
+                        "connections-purple": "#D8B4E2",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800">
+<div class="flex size-12 shrink-0 items-center justify-start">
+<button class="flex items-center justify-center p-0 h-12 w-12 rounded-lg bg-transparent text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Connections</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex items-center justify-center p-0 h-12 w-12 rounded-lg bg-transparent text-text-light dark:text-text-dark">
+<span class="material-symbols-outlined text-2xl">help</span>
+</button>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-grow px-4 py-6 flex flex-col items-center">
+<!-- Headline Text -->
+<h1 class="text-3xl font-bold leading-tight tracking-[-0.015em] text-center pb-2">Nicely Done!</h1>
+<p class="text-center text-gray-600 dark:text-gray-400 mb-6">You found all four connections.</p>
+<!-- Solved Puzzle Grid -->
+<div class="w-full max-w-md flex flex-col gap-3">
+<!-- Group 1: Yellow -->
+<div class="flex flex-col items-center justify-center rounded-lg p-4 text-center bg-connections-yellow text-black">
+<p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">THINGS THAT ARE YELLOW</p>
+<p class="text-lg font-semibold leading-normal uppercase">SUN, DAFFODIL, BUTTER, BANANA</p>
+</div>
+<!-- Group 2: Green -->
+<div class="flex flex-col items-center justify-center rounded-lg p-4 text-center bg-connections-green text-black">
+<p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">SEA CREATURES</p>
+<p class="text-lg font-semibold leading-normal uppercase">WHALE, DOLPHIN, SHARK, SQUID</p>
+</div>
+<!-- Group 3: Blue -->
+<div class="flex flex-col items-center justify-center rounded-lg p-4 text-center bg-connections-blue text-black">
+<p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">PARTS OF A TREE</p>
+<p class="text-lg font-semibold leading-normal uppercase">BARK, LEAF, BRANCH, ROOT</p>
+</div>
+<!-- Group 4: Purple -->
+<div class="flex flex-col items-center justify-center rounded-lg p-4 text-center bg-connections-purple text-black">
+<p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">FILM DIRECTORS</p>
+<p class="text-lg font-semibold leading-normal uppercase">SPIKE, WES, TIM, SOFIA</p>
+</div>
+</div>
+<!-- Performance Metrics -->
+<div class="mt-8 text-center">
+<p class="text-lg text-gray-700 dark:text-gray-300">Mistakes: <span class="font-bold text-text-light dark:text-text-dark">2</span></p>
+</div>
+<!-- Action Buttons -->
+<div class="w-full max-w-md mt-8 flex flex-col gap-4">
+<button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-base font-bold leading-normal text-white">
+<span class="material-symbols-outlined">share</span>
+<span>Share Your Results</span>
+</button>
+<button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-bold leading-normal text-text-light dark:text-text-dark hover:bg-gray-100 dark:hover:bg-card-dark">
+<span>View All Puzzles</span>
+</button>
+</div>
+<div class="h-8"></div> <!-- Spacer -->
+</main>
+</div>
+</body></html>

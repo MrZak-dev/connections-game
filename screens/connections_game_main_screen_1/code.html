@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Connections Game</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
+<!-- Top App Bar -->
+<header class="flex items-center justify-between py-2">
+<button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+<span class="material-symbols-outlined text-2xl">help</span>
+</button>
+<div class="flex flex-col items-center">
+<h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
+<p class="text-sm text-gray-500 dark:text-gray-400">Puzzle #123</p>
+</div>
+<button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</header>
+<!-- Solved Groups Area -->
+<div class="my-4 flex flex-col gap-2">
+<!-- Initially empty. Solved groups would be added here. -->
+</div>
+<!-- Game Grid -->
+<div class="grid grid-cols-4 gap-2 text-center">
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Candy</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Trash</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Waste</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Junk</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Rock</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Metal</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Pop</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Punk</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Buck</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Bill</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Note</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Dough</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Acid</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Garage</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">House</button>
+<button class="flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600">Rap</button>
+</div>
+<!-- Mistakes Counter -->
+<div class="flex w-full flex-col items-center gap-2 pt-6 pb-4">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-400">Mistakes remaining:</p>
+<div class="flex w-full flex-row items-center justify-center gap-3">
+<div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+<div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+<div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+<div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-1 flex-col justify-end pb-4">
+<div class="flex justify-stretch py-2">
+<div class="flex flex-1 flex-wrap justify-center gap-3">
+<button class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Shuffle</span>
+</button>
+<button class="flex min-w-[120px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Deselect all</span>
+</button>
+</div>
+</div>
+<div class="flex py-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-base font-bold leading-normal tracking-[0.015em] opacity-50" disabled="">
+<span class="truncate">Submit</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>
