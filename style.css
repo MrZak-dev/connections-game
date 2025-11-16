@@ -1,8 +1,10 @@
 body {
-    font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.word-button svg text {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 20px; /* A base size for SVG scaling */
+    fill: currentColor;
 }
