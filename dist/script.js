@@ -1,45 +1,31 @@
-interface Puzzle {
-    date: string;
-    groups: {
-        [key: string]: {
-            level: number;
-            description: string;
-            words: string[];
-        };
-    };
-}
-
 class ConnectionsGame {
-    private puzzles: Puzzle[] = [];
-    private currentPuzzle: Puzzle | null = null;
-    private words: string[] = [];
-    private selectedWords: string[] = [];
-    private mistakes: number = 4;
-    private solvedGroups: { [key: string]: { description: string; words: string[] } } = {};
-
-    private gameGrid: HTMLElement = document.getElementById('game-grid')!;
-    private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
-    private submitButton: HTMLButtonElement = document.getElementById('submit-button') as HTMLButtonElement;
-    private shuffleButton: HTMLButtonElement = document.getElementById('shuffle-button') as HTMLButtonElement;
-    private deselectAllButton: HTMLButtonElement = document.getElementById('deselect-all-button') as HTMLButtonElement;
-    private solvedGroupsContainer: HTMLElement = document.getElementById('solved-groups')!;
-
+    puzzles = [];
+    currentPuzzle = null;
+    words = [];
+    selectedWords = [];
+    mistakes = 4;
+    solvedGroups = {};
+    gameGrid = document.getElementById('game-grid');
+    mistakesCounter = document.getElementById('mistakes-counter');
+    submitButton = document.getElementById('submit-button');
+    shuffleButton = document.getElementById('shuffle-button');
+    deselectAllButton = document.getElementById('deselect-all-button');
+    solvedGroupsContainer = document.getElementById('solved-groups');
     constructor() {
         this.loadPuzzles();
     }
-
-    private async loadPuzzles() {
+    async loadPuzzles() {
         try {
             const response = await fetch('puzzles.json');
             const data = await response.json();
             this.puzzles = data.puzzles;
             this.startNewGame();
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Failed to load puzzles:', error);
         }
     }
-
-    private startNewGame() {
+    startNewGame() {
         if (this.puzzles.length > 0) {
             this.currentPuzzle = this.puzzles[0];
             this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
@@ -48,56 +34,48 @@ class ConnectionsGame {
             this.addEventListeners();
         }
     }
-
-    private renderGrid() {
+    renderGrid() {
         this.gameGrid.innerHTML = '';
-        const buttons: { button: HTMLButtonElement, text: SVGTextElement }[] = [];
+        const buttons = [];
         this.words.forEach(word => {
             const button = document.createElement('button');
             button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
             button.dataset.word = word;
-
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svg.setAttribute('width', '100%');
             svg.setAttribute('height', '100%');
             svg.setAttribute('viewBox', '0 0 100 40');
-
             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
             text.setAttribute('x', '50%');
             text.setAttribute('y', '50%');
             text.setAttribute('dominant-baseline', 'middle');
             text.setAttribute('text-anchor', 'middle');
             text.textContent = word;
-
             svg.appendChild(text);
             button.appendChild(svg);
-
             buttons.push({ button, text });
-
             button.addEventListener('click', () => this.handleWordClick(button));
             this.gameGrid.appendChild(button);
         });
-
         buttons.forEach(({ button, text }) => {
             this.adjustFontSize(button, text, 90);
         });
     }
-
-    private adjustFontSize(button: HTMLElement, text: SVGTextElement, maxWidth: number) {
+    adjustFontSize(button, text, maxWidth) {
         const textLength = text.getComputedTextLength();
         if (textLength > maxWidth) {
             text.setAttribute('textLength', maxWidth.toString());
             text.setAttribute('lengthAdjust', 'spacingAndGlyphs');
         }
     }
-
-    private handleWordClick(button: HTMLButtonElement) {
-        const word = button.dataset.word!;
+    handleWordClick(button) {
+        const word = button.dataset.word;
         if (this.selectedWords.includes(word)) {
             this.selectedWords = this.selectedWords.filter(w => w !== word);
             button.classList.remove('bg-gray-900', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
             button.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
-        } else {
+        }
+        else {
             if (this.selectedWords.length < 4) {
                 this.selectedWords.push(word);
                 button.classList.add('bg-gray-900', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
@@ -106,34 +84,31 @@ class ConnectionsGame {
         }
         this.updateSubmitButtonState();
     }
-
-    private updateSubmitButtonState() {
+    updateSubmitButtonState() {
         if (this.selectedWords.length === 4) {
             this.submitButton.disabled = false;
             this.submitButton.classList.remove('opacity-50', 'bg-gray-300', 'dark:bg-gray-600', 'text-gray-500', 'dark:text-gray-400');
             this.submitButton.classList.add('bg-gray-800', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
-        } else {
+        }
+        else {
             this.submitButton.disabled = true;
             this.submitButton.classList.add('opacity-50', 'bg-gray-300', 'dark:bg-gray-600', 'text-gray-500', 'dark:text-gray-400');
             this.submitButton.classList.remove('bg-gray-800', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
         }
     }
-
-    private addEventListeners() {
+    addEventListeners() {
         this.shuffleButton.addEventListener('click', () => this.shuffleWords());
         this.deselectAllButton.addEventListener('click', () => this.deselectAll());
         this.submitButton.addEventListener('click', () => this.submitSelection());
     }
-
-    private shuffleWords() {
+    shuffleWords() {
         for (let i = this.words.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
         }
         this.renderGrid();
     }
-
-    private deselectAll() {
+    deselectAll() {
         this.selectedWords = [];
         const buttons = this.gameGrid.querySelectorAll('button');
         buttons.forEach(button => {
@@ -142,28 +117,26 @@ class ConnectionsGame {
         });
         this.updateSubmitButtonState();
     }
-
-    private submitSelection() {
-        if (this.selectedWords.length !== 4) return;
-
-        let correctGroupKey: string | null = null;
-        for (const key in this.currentPuzzle!.groups) {
-            const groupWords = this.currentPuzzle!.groups[key].words;
+    submitSelection() {
+        if (this.selectedWords.length !== 4)
+            return;
+        let correctGroupKey = null;
+        for (const key in this.currentPuzzle.groups) {
+            const groupWords = this.currentPuzzle.groups[key].words;
             if (this.selectedWords.every(word => groupWords.includes(word))) {
                 correctGroupKey = key;
                 break;
             }
         }
-
         if (correctGroupKey) {
             this.handleCorrectGuess(correctGroupKey);
-        } else {
+        }
+        else {
             this.handleIncorrectGuess();
         }
     }
-
-    private handleCorrectGuess(groupKey: string) {
-        const group = this.currentPuzzle!.groups[groupKey];
+    handleCorrectGuess(groupKey) {
+        const group = this.currentPuzzle.groups[groupKey];
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
         this.words = this.words.filter(word => !group.words.includes(word));
         this.selectedWords = [];
@@ -174,8 +147,7 @@ class ConnectionsGame {
             this.endGame(true);
         }
     }
-
-    private handleIncorrectGuess() {
+    handleIncorrectGuess() {
         this.mistakes--;
         this.updateMistakesCounter();
         this.deselectAll();
@@ -183,31 +155,28 @@ class ConnectionsGame {
             this.endGame(false);
         }
     }
-
-    private updateMistakesCounter() {
+    updateMistakesCounter() {
         const dots = this.mistakesCounter.children;
         for (let i = 0; i < 4; i++) {
             if (i < this.mistakes) {
                 dots[i].classList.add('bg-gray-800', 'dark:bg-gray-200');
                 dots[i].classList.remove('bg-gray-400', 'dark:bg-gray-600');
-            } else {
+            }
+            else {
                 dots[i].classList.remove('bg-gray-800', 'dark:bg-gray-200');
                 dots[i].classList.add('bg-gray-400', 'dark:bg-gray-600');
             }
         }
     }
-
-    private renderSolvedGroups() {
+    renderSolvedGroups() {
         this.solvedGroupsContainer.innerHTML = '';
-        const groupColors: { [key: string]: string } = {
+        const groupColors = {
             'yellow': 'bg-connections-yellow',
             'green': 'bg-connections-green',
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
-
+        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle.groups[a].level - this.currentPuzzle.groups[b].level);
         sortedGroups.forEach(key => {
             const group = this.solvedGroups[key];
             const groupElement = document.createElement('div');
@@ -219,14 +188,13 @@ class ConnectionsGame {
             this.solvedGroupsContainer.appendChild(groupElement);
         });
     }
-
-    private endGame(isWin: boolean) {
+    endGame(isWin) {
         if (isWin) {
             this.showSolvedScreen();
-        } else {
+        }
+        else {
             alert('You have run out of mistakes. Game over.');
         }
-
         // Disable all buttons
         const buttons = this.gameGrid.querySelectorAll('button');
         buttons.forEach(button => button.disabled = true);
@@ -234,9 +202,8 @@ class ConnectionsGame {
         this.shuffleButton.disabled = true;
         this.deselectAllButton.disabled = true;
     }
-
-    private showSolvedScreen() {
-        const root = document.getElementById('root')!;
+    showSolvedScreen() {
+        const root = document.getElementById('root');
         root.innerHTML = `
             <main class="flex-grow px-4 py-6 flex flex-col items-center">
                 <!-- Headline Text -->
@@ -264,15 +231,14 @@ class ConnectionsGame {
             </main>
         `;
     }
-
-    private getSolvedGroupsHTML(): string {
-        const groupColors: { [key: string]: string } = {
+    getSolvedGroupsHTML() {
+        const groupColors = {
             'yellow': 'bg-connections-yellow',
             'green': 'bg-connections-green',
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
+        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle.groups[a].level - this.currentPuzzle.groups[b].level);
         return sortedGroups.map(key => {
             const group = this.solvedGroups[key];
             return `
@@ -284,17 +250,9 @@ class ConnectionsGame {
         }).join('');
     }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     new ConnectionsGame();
 });
-
-declare global {
-    interface Window {
-        tailwind: any;
-    }
-}
-
 window.tailwind.config = {
     darkMode: "class",
     theme: {
@@ -323,5 +281,4 @@ window.tailwind.config = {
         },
     },
 };
-
 export {};
