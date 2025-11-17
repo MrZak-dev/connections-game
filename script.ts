@@ -16,6 +16,7 @@ class ConnectionsGame {
     private selectedWords: string[] = [];
     private mistakes: number = 4;
     private solvedGroups: { [key: string]: { description: string; words: string[] } } = {};
+    private solvedGroupOrder: string[] = [];
 
     private gameGrid: HTMLElement = document.getElementById('game-grid')!;
     private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
@@ -126,6 +127,7 @@ class ConnectionsGame {
     }
 
     private shuffleWords() {
+        this.deselectAll();
         for (let i = this.words.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
@@ -146,42 +148,150 @@ class ConnectionsGame {
     private submitSelection() {
         if (this.selectedWords.length !== 4) return;
 
-        let correctGroupKey: string | null = null;
-        for (const key in this.currentPuzzle!.groups) {
-            const groupWords = this.currentPuzzle!.groups[key].words;
-            if (this.selectedWords.every(word => groupWords.includes(word))) {
-                correctGroupKey = key;
-                break;
-            }
-        }
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
 
-        if (correctGroupKey) {
-            this.handleCorrectGuess(correctGroupKey);
-        } else {
-            this.handleIncorrectGuess();
-        }
+        selectedButtons.forEach((button, index) => {
+            setTimeout(() => {
+                button.classList.add('scale-up');
+                button.addEventListener('animationend', () => {
+                    button.classList.remove('scale-up');
+                }, { once: true });
+            }, index * 100);
+        });
+
+        const totalAnimationTime = selectedButtons.length * 100 + 500;
+
+        setTimeout(() => {
+            let correctGroupKey: string | null = null;
+            for (const key in this.currentPuzzle!.groups) {
+                const groupWords = this.currentPuzzle!.groups[key].words;
+                if (this.selectedWords.every(word => groupWords.includes(word))) {
+                    correctGroupKey = key;
+                    break;
+                }
+            }
+
+            if (correctGroupKey) {
+                this.handleCorrectGuess(correctGroupKey);
+            } else {
+                this.handleIncorrectGuess();
+            }
+        }, totalAnimationTime);
     }
 
-    private handleCorrectGuess(groupKey: string) {
+    private async handleCorrectGuess(groupKey: string) {
         const group = this.currentPuzzle!.groups[groupKey];
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
+        const allButtons = Array.from(this.gameGrid.querySelectorAll('.word-button')) as HTMLButtonElement[];
+        const firstRowButtons = allButtons.slice(0, 4);
+
+        const buttonToTargetMap = new Map<HTMLButtonElement, HTMLButtonElement>();
+
+        const selectedNotInFirstRow = selectedButtons.filter(btn => !firstRowButtons.includes(btn));
+        const firstRowNotSelected = firstRowButtons.filter(btn => !selectedButtons.includes(btn));
+
+        selectedNotInFirstRow.forEach((button, i) => {
+            const target = firstRowNotSelected[i];
+            if (target) {
+                buttonToTargetMap.set(button, target);
+            }
+        });
+
+        const swapPromises = Array.from(buttonToTargetMap.entries()).flatMap(([button, target]) => {
+            return this.animateSwap(button, target);
+        });
+
+        if (swapPromises.length > 0) {
+            await Promise.all(swapPromises);
+        }
+
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
+        this.solvedGroupOrder.push(groupKey);
         this.words = this.words.filter(word => !group.words.includes(word));
         this.selectedWords = [];
-        this.renderGrid();
+
         this.renderSolvedGroups();
+        this.renderGrid();
+
+        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
+        if (newSolvedGroupElement) {
+            newSolvedGroupElement.classList.add('scale-up-down');
+            newSolvedGroupElement.addEventListener('animationend', () => {
+                newSolvedGroupElement.classList.remove('scale-up-down');
+            }, { once: true });
+        }
+
         this.updateSubmitButtonState();
-        if (Object.keys(this.solvedGroups).length === 4) {
+        if (this.solvedGroupOrder.length === 4) {
             this.endGame(true);
         }
     }
 
+    private animateSwap(button1: HTMLElement, button2: HTMLElement): [Promise<void>, Promise<void>] {
+        const rect1 = button1.getBoundingClientRect();
+        const rect2 = button2.getBoundingClientRect();
+
+        const translateX1 = rect2.left - rect1.left;
+        const translateY1 = rect2.top - rect1.top;
+        const translateX2 = rect1.left - rect2.left;
+        const translateY2 = rect1.top - rect2.top;
+
+        const promise1 = new Promise<void>(resolve => {
+            button1.style.transition = 'transform 0.5s';
+            button1.style.transform = `translate(${translateX1}px, ${translateY1}px)`;
+            button1.addEventListener('transitionend', () => {
+                button1.style.transition = '';
+                button1.style.transform = '';
+                resolve();
+            }, { once: true });
+        });
+
+        const promise2 = new Promise<void>(resolve => {
+            button2.style.transition = 'transform 0.5s';
+            button2.style.transform = `translate(${translateX2}px, ${translateY2}px)`;
+            button2.addEventListener('transitionend', () => {
+                button2.style.transition = '';
+                button2.style.transform = '';
+                resolve();
+            }, { once: true });
+        });
+
+        return [promise1, promise2];
+    }
+
     private handleIncorrectGuess() {
-        this.mistakes--;
-        this.updateMistakesCounter();
-        this.deselectAll();
-        if (this.mistakes === 0) {
-            this.endGame(false);
-        }
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
+
+        let animationsCompleted = 0;
+        selectedButtons.forEach(button => {
+            button.classList.add('shake');
+            button.addEventListener('animationend', () => {
+                button.classList.remove('shake');
+                animationsCompleted++;
+                if (animationsCompleted === selectedButtons.length) {
+                    const dots = this.mistakesCounter.children;
+                    const mistakeDot = dots[this.mistakes - 1] as HTMLElement;
+                    if (mistakeDot) {
+                        mistakeDot.classList.add('fade-out');
+                        mistakeDot.addEventListener('animationend', () => {
+                            mistakeDot.classList.remove('fade-out');
+                             this.mistakes--;
+                             this.updateMistakesCounter();
+                             this.deselectAll();
+                             if (this.mistakes === 0) {
+                                 this.endGame(false);
+                             }
+                        }, { once: true });
+                    }
+                }
+            }, { once: true });
+        });
     }
 
     private updateMistakesCounter() {
@@ -206,9 +316,7 @@ class ConnectionsGame {
             'purple': 'bg-connections-purple',
         };
 
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
-
-        sortedGroups.forEach(key => {
+        this.solvedGroupOrder.forEach(key => {
             const group = this.solvedGroups[key];
             const groupElement = document.createElement('div');
             groupElement.className = `flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black`;
@@ -272,8 +380,7 @@ class ConnectionsGame {
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
-        return sortedGroups.map(key => {
+        return this.solvedGroupOrder.map(key => {
             const group = this.solvedGroups[key];
             return `
                 <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
