@@ -12,7 +12,10 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.56.1"
   }
 }
