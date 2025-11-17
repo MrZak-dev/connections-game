@@ -180,55 +180,117 @@ class ConnectionsGame {
         }, totalAnimationTime);
     }
 
-    private handleCorrectGuess(groupKey: string) {
+    private async handleCorrectGuess(groupKey: string) {
         const group = this.currentPuzzle!.groups[groupKey];
-        this.solvedGroups[groupKey] = { description: group.description, words: group.words };
-
-        this.renderSolvedGroups();
-        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
-
-        if (!newSolvedGroupElement) {
-            this.words = this.words.filter(word => !group.words.includes(word));
-            this.selectedWords = [];
-            this.renderGrid();
-            this.updateSubmitButtonState();
-            if (Object.keys(this.solvedGroups).length === 4) this.endGame(true);
-            return;
-        }
-
-        const targetRect = newSolvedGroupElement.getBoundingClientRect();
-        newSolvedGroupElement.style.opacity = '0';
-
         const selectedButtons = this.selectedWords.map(word =>
             this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
         );
+        const allButtons = Array.from(this.gameGrid.querySelectorAll('.word-button')) as HTMLButtonElement[];
+        const firstRowButtons = allButtons.slice(0, 4);
 
-        selectedButtons.forEach((button, index) => {
+        const buttonToTargetMap = new Map<HTMLButtonElement, HTMLButtonElement>();
+        const targetToButtonMap = new Map<HTMLButtonElement, HTMLButtonElement>();
+
+        const selectedInFirstRow = selectedButtons.filter(btn => firstRowButtons.includes(btn));
+        const selectedNotInFirstRow = selectedButtons.filter(btn => !firstRowButtons.includes(btn));
+        const firstRowNotSelected = firstRowButtons.filter(btn => !selectedButtons.includes(btn));
+
+        selectedNotInFirstRow.forEach((button, i) => {
+            const target = firstRowNotSelected[i];
+            if(target) {
+                buttonToTargetMap.set(button, target);
+                targetToButtonMap.set(target, button);
+            }
+        });
+
+        const swapPromises = Array.from(buttonToTargetMap.entries()).flatMap(([button, target]) => {
+            return this.animateSwap(button, target);
+        });
+
+        await Promise.all(swapPromises);
+
+        buttonToTargetMap.forEach((target, button) => {
+            const buttonParent = button.parentNode!;
+            const targetParent = target.parentNode!;
+            const buttonNextSibling = button.nextSibling;
+            const targetNextSibling = target.nextSibling;
+
+            targetParent.insertBefore(button, targetNextSibling);
+            buttonParent.insertBefore(target, buttonNextSibling);
+        });
+
+
+        this.solvedGroups[groupKey] = { description: group.description, words: group.words };
+        this.renderSolvedGroups();
+        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
+        const targetRect = newSolvedGroupElement.getBoundingClientRect();
+        newSolvedGroupElement.style.opacity = '0';
+
+        const finalButtons = firstRowButtons.map(originalButton => {
+            return targetToButtonMap.get(originalButton) || originalButton;
+        });
+
+        const movePromises = finalButtons.map((button, index) => {
             const buttonRect = button.getBoundingClientRect();
             const translateX = targetRect.left + targetRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
             const translateY = targetRect.top + targetRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
 
-            button.style.transition = `transform 0.5s ${index * 50}ms ease-in-out, opacity 0.5s ${index * 50}ms ease-in-out`;
-            button.style.position = 'relative';
-            button.style.zIndex = '1000';
-            button.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
-            button.style.opacity = '0';
+            return new Promise<void>(resolve => {
+                button.style.transition = `transform 0.5s ${index * 100}ms, opacity 0.5s ${index * 100}ms`;
+                button.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
+                button.style.opacity = '0';
+                button.addEventListener('transitionend', () => resolve(), { once: true });
+            });
         });
 
-        const animationDuration = 500 + (selectedButtons.length - 1) * 50;
+        await Promise.all(movePromises);
 
-        setTimeout(() => {
-            newSolvedGroupElement.style.transition = 'opacity 0.3s ease-in-out';
-            newSolvedGroupElement.style.opacity = '1';
+        newSolvedGroupElement.style.transition = 'opacity 0.3s ease-in-out';
+        newSolvedGroupElement.style.opacity = '1';
+        newSolvedGroupElement.classList.add('scale-up-down');
+        newSolvedGroupElement.addEventListener('animationend', () => {
+            newSolvedGroupElement.classList.remove('scale-up-down');
+        }, { once: true });
 
-            this.words = this.words.filter(word => !group.words.includes(word));
-            this.selectedWords = [];
-            this.renderGrid();
-            this.updateSubmitButtonState();
-            if (Object.keys(this.solvedGroups).length === 4) {
-                this.endGame(true);
-            }
-        }, animationDuration);
+        this.words = this.words.filter(word => !group.words.includes(word));
+        this.selectedWords = [];
+        this.renderGrid();
+        this.updateSubmitButtonState();
+        if (Object.keys(this.solvedGroups).length === 4) {
+            this.endGame(true);
+        }
+    }
+
+    private animateSwap(button1: HTMLElement, button2: HTMLElement): [Promise<void>, Promise<void>] {
+        const rect1 = button1.getBoundingClientRect();
+        const rect2 = button2.getBoundingClientRect();
+
+        const translateX1 = rect2.left - rect1.left;
+        const translateY1 = rect2.top - rect1.top;
+        const translateX2 = rect1.left - rect2.left;
+        const translateY2 = rect1.top - rect2.top;
+
+        const promise1 = new Promise<void>(resolve => {
+            button1.style.transition = 'transform 0.5s';
+            button1.style.transform = `translate(${translateX1}px, ${translateY1}px)`;
+            button1.addEventListener('transitionend', () => {
+                button1.style.transition = '';
+                button1.style.transform = '';
+                resolve();
+            }, { once: true });
+        });
+
+        const promise2 = new Promise<void>(resolve => {
+            button2.style.transition = 'transform 0.5s';
+            button2.style.transform = `translate(${translateX2}px, ${translateY2}px)`;
+            button2.addEventListener('transitionend', () => {
+                button2.style.transition = '';
+                button2.style.transform = '';
+                resolve();
+            }, { once: true });
+        });
+
+        return [promise1, promise2];
     }
 
     private handleIncorrectGuess() {
