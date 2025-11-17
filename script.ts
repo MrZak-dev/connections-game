@@ -235,30 +235,30 @@ class ConnectionsGame {
             this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
         );
 
+        let animationsCompleted = 0;
         selectedButtons.forEach(button => {
             button.classList.add('shake');
             button.addEventListener('animationend', () => {
                 button.classList.remove('shake');
+                animationsCompleted++;
+                if (animationsCompleted === selectedButtons.length) {
+                    const dots = this.mistakesCounter.children;
+                    const mistakeDot = dots[this.mistakes - 1] as HTMLElement;
+                    if (mistakeDot) {
+                        mistakeDot.classList.add('fade-out');
+                        mistakeDot.addEventListener('animationend', () => {
+                            mistakeDot.classList.remove('fade-out');
+                             this.mistakes--;
+                             this.updateMistakesCounter();
+                             this.deselectAll();
+                             if (this.mistakes === 0) {
+                                 this.endGame(false);
+                             }
+                        }, { once: true });
+                    }
+                }
             }, { once: true });
         });
-
-        const dots = this.mistakesCounter.children;
-        const mistakeDot = dots[this.mistakes - 1] as HTMLElement;
-        if (mistakeDot) {
-            mistakeDot.classList.add('fade-out');
-            mistakeDot.addEventListener('animationend', () => {
-                mistakeDot.classList.remove('fade-out');
-            }, { once: true });
-        }
-
-        setTimeout(() => {
-            this.mistakes--;
-            this.updateMistakesCounter();
-            this.deselectAll();
-            if (this.mistakes === 0) {
-                this.endGame(false);
-            }
-        }, 500);
     }
 
     private updateMistakesCounter() {
