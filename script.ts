@@ -16,6 +16,7 @@ class ConnectionsGame {
     private selectedWords: string[] = [];
     private mistakes: number = 4;
     private solvedGroups: { [key: string]: { description: string; words: string[] } } = {};
+    private solvedGroupOrder: string[] = [];
 
     private gameGrid: HTMLElement = document.getElementById('game-grid')!;
     private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
@@ -209,6 +210,7 @@ class ConnectionsGame {
         }
 
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
+        this.solvedGroupOrder.push(groupKey);
         this.words = this.words.filter(word => !group.words.includes(word));
         this.selectedWords = [];
 
@@ -224,7 +226,7 @@ class ConnectionsGame {
         }
 
         this.updateSubmitButtonState();
-        if (Object.keys(this.solvedGroups).length === 4) {
+        if (this.solvedGroupOrder.length === 4) {
             this.endGame(true);
         }
     }
@@ -314,9 +316,7 @@ class ConnectionsGame {
             'purple': 'bg-connections-purple',
         };
 
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
-
-        sortedGroups.forEach(key => {
+        this.solvedGroupOrder.forEach(key => {
             const group = this.solvedGroups[key];
             const groupElement = document.createElement('div');
             groupElement.className = `flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black`;
@@ -380,8 +380,7 @@ class ConnectionsGame {
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        const sortedGroups = Object.keys(this.solvedGroups).sort((a, b) => this.currentPuzzle!.groups[a].level - this.currentPuzzle!.groups[b].level);
-        return sortedGroups.map(key => {
+        return this.solvedGroupOrder.map(key => {
             const group = this.solvedGroups[key];
             return `
                 <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
