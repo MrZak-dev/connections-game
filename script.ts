@@ -189,7 +189,6 @@ class ConnectionsGame {
         const firstRowButtons = allButtons.slice(0, 4);
 
         const buttonToTargetMap = new Map<HTMLButtonElement, HTMLButtonElement>();
-        const targetToButtonMap = new Map<HTMLButtonElement, HTMLButtonElement>();
 
         const selectedNotInFirstRow = selectedButtons.filter(btn => !firstRowButtons.includes(btn));
         const firstRowNotSelected = firstRowButtons.filter(btn => !selectedButtons.includes(btn));
@@ -198,7 +197,6 @@ class ConnectionsGame {
             const target = firstRowNotSelected[i];
             if (target) {
                 buttonToTargetMap.set(button, target);
-                targetToButtonMap.set(target, button);
             }
         });
 
@@ -210,40 +208,21 @@ class ConnectionsGame {
             await Promise.all(swapPromises);
         }
 
-        buttonToTargetMap.forEach((target, button) => {
-            const buttonParent = button.parentNode!;
-            const targetParent = target.parentNode!;
-            buttonParent.insertBefore(target, button);
-            targetParent.insertBefore(button, target);
-        });
-
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
-        this.renderSolvedGroups();
-        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
-        newSolvedGroupElement.style.opacity = '0';
-
-        const finalButtonsInFirstRow = Array.from(this.gameGrid.querySelectorAll('.word-button')).slice(0, 4) as HTMLButtonElement[];
-
-        const fadeOutPromises = finalButtonsInFirstRow.map((button, index) => {
-            return new Promise<void>(resolve => {
-                button.style.transition = `opacity 0.3s ${index * 50}ms ease-in-out`;
-                button.style.opacity = '0';
-                button.addEventListener('transitionend', () => resolve(), { once: true });
-            });
-        });
-
-        await Promise.all(fadeOutPromises);
-
-        newSolvedGroupElement.style.transition = 'opacity 0.3s ease-in-out';
-        newSolvedGroupElement.style.opacity = '1';
-        newSolvedGroupElement.classList.add('scale-up-down');
-        newSolvedGroupElement.addEventListener('animationend', () => {
-            newSolvedGroupElement.classList.remove('scale-up-down');
-        }, { once: true });
-
         this.words = this.words.filter(word => !group.words.includes(word));
         this.selectedWords = [];
+
+        this.renderSolvedGroups();
         this.renderGrid();
+
+        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
+        if (newSolvedGroupElement) {
+            newSolvedGroupElement.classList.add('scale-up-down');
+            newSolvedGroupElement.addEventListener('animationend', () => {
+                newSolvedGroupElement.classList.remove('scale-up-down');
+            }, { once: true });
+        }
+
         this.updateSubmitButtonState();
         if (Object.keys(this.solvedGroups).length === 4) {
             this.endGame(true);
