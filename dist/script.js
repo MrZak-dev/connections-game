@@ -1,3 +1,4 @@
+import { GameStorage } from './storage.js';
 class ConnectionsGame {
     puzzles = [];
     currentPuzzle = null;
@@ -29,10 +30,22 @@ class ConnectionsGame {
     startNewGame() {
         if (this.puzzles.length > 0) {
             this.currentPuzzle = this.puzzles[0];
-            this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
-            this.shuffleWords();
-            this.renderGrid();
+            const savedState = GameStorage.loadState();
+            if (savedState) {
+                this.mistakes = savedState.mistakes;
+                this.solvedGroups = savedState.solvedGroups;
+                this.solvedGroupOrder = savedState.solvedGroupOrder;
+                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
+                    .filter(word => !Object.values(this.solvedGroups).flatMap(g => g.words).includes(word));
+                this.renderSolvedGroups();
+                this.shuffleWords(false);
+            }
+            else {
+                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
+                this.shuffleWords(false);
+            }
             this.addEventListeners();
+            this.updateMistakesCounter();
         }
     }
     renderGrid() {
@@ -102,8 +115,10 @@ class ConnectionsGame {
         this.deselectAllButton.addEventListener('click', () => this.deselectAll());
         this.submitButton.addEventListener('click', () => this.submitSelection());
     }
-    shuffleWords() {
-        this.deselectAll();
+    shuffleWords(deselect = true) {
+        if (deselect) {
+            this.deselectAll();
+        }
         for (let i = this.words.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
@@ -183,9 +198,19 @@ class ConnectionsGame {
             }, { once: true });
         }
         this.updateSubmitButtonState();
+        this.saveGameState();
         if (this.solvedGroupOrder.length === 4) {
             this.endGame(true);
         }
+    }
+    saveGameState() {
+        const state = {
+            mistakes: this.mistakes,
+            solvedGroups: this.solvedGroups,
+            solvedGroupOrder: this.solvedGroupOrder,
+            lastPlayed: new Date().toISOString().slice(0, 10)
+        };
+        GameStorage.saveState(state);
     }
     animateSwap(button1, button2) {
         const rect1 = button1.getBoundingClientRect();
@@ -235,6 +260,7 @@ class ConnectionsGame {
                             if (this.mistakes === 0) {
                                 this.endGame(false);
                             }
+                            this.saveGameState();
                         }, { once: true });
                     }
                 }
@@ -276,6 +302,11 @@ class ConnectionsGame {
     endGame(isWin) {
         if (isWin) {
             this.showSolvedScreen();
+            const stats = GameStorage.loadStats();
+            stats.gamesPlayed++;
+            stats.mistakesPerGame.push(4 - this.mistakes);
+            GameStorage.saveStats(stats);
+            console.log('Game stats:', stats);
         }
         else {
             alert('You have run out of mistakes. Game over.');
@@ -335,7 +366,11 @@ class ConnectionsGame {
     }
 }
 document.addEventListener('DOMContentLoaded', () => {
-    new ConnectionsGame();
+    const game = new ConnectionsGame();
+    window.resetProgress = () => {
+        GameStorage.resetState();
+        location.reload();
+    };
 });
 window.tailwind.config = {
     darkMode: "class",
@@ -365,4 +400,3 @@ window.tailwind.config = {
         },
     },
 };
-export {};
