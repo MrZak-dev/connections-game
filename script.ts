@@ -146,42 +146,119 @@ class ConnectionsGame {
     private submitSelection() {
         if (this.selectedWords.length !== 4) return;
 
-        let correctGroupKey: string | null = null;
-        for (const key in this.currentPuzzle!.groups) {
-            const groupWords = this.currentPuzzle!.groups[key].words;
-            if (this.selectedWords.every(word => groupWords.includes(word))) {
-                correctGroupKey = key;
-                break;
-            }
-        }
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
 
-        if (correctGroupKey) {
-            this.handleCorrectGuess(correctGroupKey);
-        } else {
-            this.handleIncorrectGuess();
-        }
+        selectedButtons.forEach((button, index) => {
+            setTimeout(() => {
+                button.classList.add('scale-up');
+                button.addEventListener('animationend', () => {
+                    button.classList.remove('scale-up');
+                }, { once: true });
+            }, index * 100);
+        });
+
+        const totalAnimationTime = selectedButtons.length * 100 + 500;
+
+        setTimeout(() => {
+            let correctGroupKey: string | null = null;
+            for (const key in this.currentPuzzle!.groups) {
+                const groupWords = this.currentPuzzle!.groups[key].words;
+                if (this.selectedWords.every(word => groupWords.includes(word))) {
+                    correctGroupKey = key;
+                    break;
+                }
+            }
+
+            if (correctGroupKey) {
+                this.handleCorrectGuess(correctGroupKey);
+            } else {
+                this.handleIncorrectGuess();
+            }
+        }, totalAnimationTime);
     }
 
     private handleCorrectGuess(groupKey: string) {
         const group = this.currentPuzzle!.groups[groupKey];
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
-        this.words = this.words.filter(word => !group.words.includes(word));
-        this.selectedWords = [];
-        this.renderGrid();
+
         this.renderSolvedGroups();
-        this.updateSubmitButtonState();
-        if (Object.keys(this.solvedGroups).length === 4) {
-            this.endGame(true);
+        const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
+
+        if (!newSolvedGroupElement) {
+            this.words = this.words.filter(word => !group.words.includes(word));
+            this.selectedWords = [];
+            this.renderGrid();
+            this.updateSubmitButtonState();
+            if (Object.keys(this.solvedGroups).length === 4) this.endGame(true);
+            return;
         }
+
+        const targetRect = newSolvedGroupElement.getBoundingClientRect();
+        newSolvedGroupElement.style.opacity = '0';
+
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
+
+        selectedButtons.forEach((button, index) => {
+            const buttonRect = button.getBoundingClientRect();
+            const translateX = targetRect.left + targetRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
+            const translateY = targetRect.top + targetRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
+
+            button.style.transition = `transform 0.5s ${index * 50}ms ease-in-out, opacity 0.5s ${index * 50}ms ease-in-out`;
+            button.style.position = 'relative';
+            button.style.zIndex = '1000';
+            button.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
+            button.style.opacity = '0';
+        });
+
+        const animationDuration = 500 + (selectedButtons.length - 1) * 50;
+
+        setTimeout(() => {
+            newSolvedGroupElement.style.transition = 'opacity 0.3s ease-in-out';
+            newSolvedGroupElement.style.opacity = '1';
+
+            this.words = this.words.filter(word => !group.words.includes(word));
+            this.selectedWords = [];
+            this.renderGrid();
+            this.updateSubmitButtonState();
+            if (Object.keys(this.solvedGroups).length === 4) {
+                this.endGame(true);
+            }
+        }, animationDuration);
     }
 
     private handleIncorrectGuess() {
-        this.mistakes--;
-        this.updateMistakesCounter();
-        this.deselectAll();
-        if (this.mistakes === 0) {
-            this.endGame(false);
+        const selectedButtons = this.selectedWords.map(word =>
+            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
+        );
+
+        selectedButtons.forEach(button => {
+            button.classList.add('shake');
+            button.addEventListener('animationend', () => {
+                button.classList.remove('shake');
+            }, { once: true });
+        });
+
+        const dots = this.mistakesCounter.children;
+        const mistakeDot = dots[this.mistakes - 1] as HTMLElement;
+        if (mistakeDot) {
+            mistakeDot.classList.add('fade-out');
+            mistakeDot.addEventListener('animationend', () => {
+                mistakeDot.classList.remove('fade-out');
+            }, { once: true });
         }
+
+        setTimeout(() => {
+            this.mistakes--;
+            this.updateMistakesCounter();
+            this.deselectAll();
+            if (this.mistakes === 0) {
+                this.endGame(false);
+            }
+        }, 500);
     }
 
     private updateMistakesCounter() {
