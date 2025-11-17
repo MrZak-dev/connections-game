@@ -191,13 +191,12 @@ class ConnectionsGame {
         const buttonToTargetMap = new Map<HTMLButtonElement, HTMLButtonElement>();
         const targetToButtonMap = new Map<HTMLButtonElement, HTMLButtonElement>();
 
-        const selectedInFirstRow = selectedButtons.filter(btn => firstRowButtons.includes(btn));
         const selectedNotInFirstRow = selectedButtons.filter(btn => !firstRowButtons.includes(btn));
         const firstRowNotSelected = firstRowButtons.filter(btn => !selectedButtons.includes(btn));
 
         selectedNotInFirstRow.forEach((button, i) => {
             const target = firstRowNotSelected[i];
-            if(target) {
+            if (target) {
                 buttonToTargetMap.set(button, target);
                 targetToButtonMap.set(target, button);
             }
@@ -207,43 +206,33 @@ class ConnectionsGame {
             return this.animateSwap(button, target);
         });
 
-        await Promise.all(swapPromises);
+        if (swapPromises.length > 0) {
+            await Promise.all(swapPromises);
+        }
 
         buttonToTargetMap.forEach((target, button) => {
             const buttonParent = button.parentNode!;
             const targetParent = target.parentNode!;
-            const buttonNextSibling = button.nextSibling;
-            const targetNextSibling = target.nextSibling;
-
-            targetParent.insertBefore(button, targetNextSibling);
-            buttonParent.insertBefore(target, buttonNextSibling);
+            buttonParent.insertBefore(target, button);
+            targetParent.insertBefore(button, target);
         });
-
 
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
         this.renderSolvedGroups();
         const newSolvedGroupElement = this.solvedGroupsContainer.lastElementChild as HTMLElement;
-        const targetRect = newSolvedGroupElement.getBoundingClientRect();
         newSolvedGroupElement.style.opacity = '0';
 
-        const finalButtons = firstRowButtons.map(originalButton => {
-            return targetToButtonMap.get(originalButton) || originalButton;
-        });
+        const finalButtonsInFirstRow = Array.from(this.gameGrid.querySelectorAll('.word-button')).slice(0, 4) as HTMLButtonElement[];
 
-        const movePromises = finalButtons.map((button, index) => {
-            const buttonRect = button.getBoundingClientRect();
-            const translateX = targetRect.left + targetRect.width / 2 - (buttonRect.left + buttonRect.width / 2);
-            const translateY = targetRect.top + targetRect.height / 2 - (buttonRect.top + buttonRect.height / 2);
-
+        const fadeOutPromises = finalButtonsInFirstRow.map((button, index) => {
             return new Promise<void>(resolve => {
-                button.style.transition = `transform 0.5s ${index * 100}ms, opacity 0.5s ${index * 100}ms`;
-                button.style.transform = `translate(${translateX}px, ${translateY}px) scale(0.5)`;
+                button.style.transition = `opacity 0.3s ${index * 50}ms ease-in-out`;
                 button.style.opacity = '0';
                 button.addEventListener('transitionend', () => resolve(), { once: true });
             });
         });
 
-        await Promise.all(movePromises);
+        await Promise.all(fadeOutPromises);
 
         newSolvedGroupElement.style.transition = 'opacity 0.3s ease-in-out';
         newSolvedGroupElement.style.opacity = '1';
