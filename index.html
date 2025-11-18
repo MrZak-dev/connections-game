@@ -11,32 +11,23 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
     <div id="root" class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
-        <div class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
-            <!-- Top App Bar -->
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
-                    <span class="material-symbols-outlined text-2xl">help</span>
-                </button>
-                <div class="flex flex-col items-center">
-                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Puzzle #1</p>
-                </div>
                 <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
+                <div class="flex flex-col items-center">
+                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
+                    <p id="puzzle-date" class="text-sm text-gray-500 dark:text-gray-400">Puzzle #1</p>
+                </div>
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">help</span>
+                </button>
             </header>
-
-            <!-- Solved Groups Area -->
-            <div id="solved-groups" class="my-4 flex flex-col gap-2">
-                <!-- Solved groups will be dynamically added here -->
-            </div>
-
-            <!-- Game Grid -->
-            <div id="game-grid" class="grid grid-cols-4 gap-2 text-center @container">
-                <!-- Word buttons will be dynamically added here -->
-            </div>
-
-            <!-- Mistakes Counter -->
+            <div id="solved-groups" class="my-4 flex flex-col gap-2"></div>
+            <div id="game-grid" class="grid grid-cols-4 gap-2 text-center @container"></div>
             <div class="flex w-full flex-col items-center gap-2 pt-6 pb-4">
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Mistakes remaining:</p>
                 <div id="mistakes-counter" class="flex w-full flex-row items-center justify-center gap-3">
@@ -46,22 +37,62 @@
                     <div class="h-3 w-3 rounded-full bg-gray-800 dark:bg-gray-200"></div>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
             <div class="flex flex-1 flex-col justify-end pb-4">
                 <div class="grid grid-cols-2 gap-3 py-2">
-                    <button id="shuffle-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
-                        <span class="truncate">Shuffle</span>
-                    </button>
-                    <button id="deselect-all-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold leading-normal tracking-[0.015em]">
-                        <span class="truncate">Deselect all</span>
-                    </button>
+                    <button id="shuffle-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold">Shuffle</button>
+                    <button id="deselect-all-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-base font-bold">Deselect all</button>
                 </div>
-                 <div class="flex py-2">
-                    <button id="submit-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-base font-bold leading-normal tracking-[0.015em] opacity-50" disabled>
-                        <span class="truncate">Submit</span>
-                    </button>
+                <div class="flex py-2">
+                    <button id="submit-button" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 flex-1 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-base font-bold opacity-50" disabled>Submit</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
+            <header class="flex items-center justify-between py-2">
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">menu</span>
+                </button>
+                <div class="flex flex-col items-center">
+                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
+                </div>
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">help</span>
+                </button>
+            </header>
+            <h2 class="text-2xl font-bold mt-4">Puzzle #<span id="success-puzzle-number"></span></h2>
+            <div id="success-solved-groups" class="my-4 flex flex-col gap-2 solved-puzzle-grid"></div>
+            <p class="text-lg">Great job!</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Mistakes: <span id="success-mistakes"></span></p>
+            <p class="mt-6 text-lg">Next puzzle in</p>
+            <p id="success-countdown-timer" class="text-5xl font-bold">00:00:00</p>
+            <div class="mt-8 flex flex-col gap-2">
+                <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-800 dark:bg-gray-200 text-gray-100 dark:text-gray-900 text-base font-bold">Share Your Results</button>
+                <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 border border-gray-300 dark:border-gray-700 text-base font-bold">View Stats</button>
+            </div>
+        </div>
+
+        <!-- Failure Screen -->
+        <div id="failure-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
+            <header class="flex items-center justify-between py-2">
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">menu</span>
+                </button>
+                <div class="flex flex-col items-center">
+                    <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-gray-100">Connections</h1>
+                </div>
+                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800 dark:text-gray-200">
+                    <span class="material-symbols-outlined text-2xl">help</span>
+                </button>
+            </header>
+            <h2 class="text-2xl font-bold mt-8">Puzzle #<span id="failure-puzzle-number"></span></h2>
+            <div id="failure-solved-groups" class="my-4 flex flex-col gap-2 solved-puzzle-grid"></div>
+            <p class="mt-4 text-lg">Next puzzle in</p>
+            <p id="failure-countdown-timer" class="text-5xl font-bold">00:00:00</p>
+            <div class="mt-8 flex flex-col gap-2">
+                <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-800 dark:bg-gray-200 text-gray-100 dark:text-gray-900 text-base font-bold">Show Solution</button>
+                <button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 border border-gray-300 dark:border-gray-700 text-base font-bold">View Stats</button>
             </div>
         </div>
     </div>

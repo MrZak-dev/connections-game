@@ -1,4 +1,4 @@
-import { GameStorage } from './storage.js';
+import { GameStorage, GameState } from './storage.js';
 
 interface Puzzle {
     date: string;
@@ -19,6 +19,11 @@ class ConnectionsGame {
     private mistakes: number = 4;
     private solvedGroups: { [key: string]: { description: string; words: string[] } } = {};
     private solvedGroupOrder: string[] = [];
+    private gameState: 'playing' | 'won' | 'lost' = 'playing';
+
+    private gameScreen: HTMLElement = document.getElementById('game-screen')!;
+    private successScreen: HTMLElement = document.getElementById('success-screen')!;
+    private failureScreen: HTMLElement = document.getElementById('failure-screen')!;
 
     private gameGrid: HTMLElement = document.getElementById('game-grid')!;
     private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
@@ -46,20 +51,41 @@ class ConnectionsGame {
         if (this.puzzles.length > 0) {
             this.currentPuzzle = this.puzzles[0];
             const savedState = GameStorage.loadState();
-            if (savedState) {
+
+            if (savedState && savedState.lastPlayed === new Date().toISOString().slice(0, 10)) {
                 this.mistakes = savedState.mistakes;
                 this.solvedGroups = savedState.solvedGroups;
                 this.solvedGroupOrder = savedState.solvedGroupOrder;
-                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
+                this.gameState = savedState.gameState;
+                 this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
                     .filter(word => !Object.values(this.solvedGroups).flatMap(g => g.words).includes(word));
                 this.renderSolvedGroups();
-                this.shuffleWords(false);
             } else {
-                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
-                this.shuffleWords(false);
+                 this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
             }
-            this.addEventListeners();
-            this.updateMistakesCounter();
+
+            this.updateScreen();
+            if (this.gameState === 'playing') {
+                this.shuffleWords(false);
+                this.addEventListeners();
+                this.updateMistakesCounter();
+            }
+        }
+    }
+
+    private updateScreen() {
+        this.gameScreen.classList.add('hidden');
+        this.successScreen.classList.add('hidden');
+        this.failureScreen.classList.add('hidden');
+
+        if (this.gameState === 'playing') {
+            this.gameScreen.classList.remove('hidden');
+        } else if (this.gameState === 'won') {
+            this.successScreen.classList.remove('hidden');
+            this.populateEndScreen(this.successScreen);
+        } else if (this.gameState === 'lost') {
+            this.failureScreen.classList.remove('hidden');
+            this.populateEndScreen(this.failureScreen);
         }
     }
 
@@ -198,32 +224,6 @@ class ConnectionsGame {
 
     private async handleCorrectGuess(groupKey: string) {
         const group = this.currentPuzzle!.groups[groupKey];
-        const selectedButtons = this.selectedWords.map(word =>
-            this.gameGrid.querySelector(`[data-word="${word}"]`) as HTMLButtonElement
-        );
-        const allButtons = Array.from(this.gameGrid.querySelectorAll('.word-button')) as HTMLButtonElement[];
-        const firstRowButtons = allButtons.slice(0, 4);
-
-        const buttonToTargetMap = new Map<HTMLButtonElement, HTMLButtonElement>();
-
-        const selectedNotInFirstRow = selectedButtons.filter(btn => !firstRowButtons.includes(btn));
-        const firstRowNotSelected = firstRowButtons.filter(btn => !selectedButtons.includes(btn));
-
-        selectedNotInFirstRow.forEach((button, i) => {
-            const target = firstRowNotSelected[i];
-            if (target) {
-                buttonToTargetMap.set(button, target);
-            }
-        });
-
-        const swapPromises = Array.from(buttonToTargetMap.entries()).flatMap(([button, target]) => {
-            return this.animateSwap(button, target);
-        });
-
-        if (swapPromises.length > 0) {
-            await Promise.all(swapPromises);
-        }
-
         this.solvedGroups[groupKey] = { description: group.description, words: group.words };
         this.solvedGroupOrder.push(groupKey);
         this.words = this.words.filter(word => !group.words.includes(word));
@@ -241,52 +241,24 @@ class ConnectionsGame {
         }
 
         this.updateSubmitButtonState();
-        this.saveGameState();
+
         if (this.solvedGroupOrder.length === 4) {
-            this.endGame(true);
+            this.gameState = 'won';
+            this.endGame();
+        } else {
+             this.saveGameState();
         }
     }
 
     private saveGameState() {
-        const state = {
+        const state: GameState = {
             mistakes: this.mistakes,
             solvedGroups: this.solvedGroups,
             solvedGroupOrder: this.solvedGroupOrder,
-            lastPlayed: new Date().toISOString().slice(0, 10)
+            lastPlayed: new Date().toISOString().slice(0, 10),
+            gameState: this.gameState
         };
         GameStorage.saveState(state);
-    }
-
-    private animateSwap(button1: HTMLElement, button2: HTMLElement): [Promise<void>, Promise<void>] {
-        const rect1 = button1.getBoundingClientRect();
-        const rect2 = button2.getBoundingClientRect();
-
-        const translateX1 = rect2.left - rect1.left;
-        const translateY1 = rect2.top - rect1.top;
-        const translateX2 = rect1.left - rect2.left;
-        const translateY2 = rect1.top - rect2.top;
-
-        const promise1 = new Promise<void>(resolve => {
-            button1.style.transition = 'transform 0.5s';
-            button1.style.transform = `translate(${translateX1}px, ${translateY1}px)`;
-            button1.addEventListener('transitionend', () => {
-                button1.style.transition = '';
-                button1.style.transform = '';
-                resolve();
-            }, { once: true });
-        });
-
-        const promise2 = new Promise<void>(resolve => {
-            button2.style.transition = 'transform 0.5s';
-            button2.style.transform = `translate(${translateX2}px, ${translateY2}px)`;
-            button2.addEventListener('transitionend', () => {
-                button2.style.transition = '';
-                button2.style.transform = '';
-                resolve();
-            }, { once: true });
-        });
-
-        return [promise1, promise2];
     }
 
     private handleIncorrectGuess() {
@@ -311,9 +283,11 @@ class ConnectionsGame {
                              this.updateMistakesCounter();
                              this.deselectAll();
                              if (this.mistakes === 0) {
-                                 this.endGame(false);
+                                 this.gameState = 'lost';
+                                 this.endGame();
+                             } else {
+                                this.saveGameState();
                              }
-                             this.saveGameState();
                         }, { once: true });
                     }
                 }
@@ -355,54 +329,27 @@ class ConnectionsGame {
         });
     }
 
-    private endGame(isWin: boolean) {
-        if (isWin) {
-            this.showSolvedScreen();
-            const stats = GameStorage.loadStats();
-            stats.gamesPlayed++;
-            stats.mistakesPerGame.push(4 - this.mistakes);
-            GameStorage.saveStats(stats);
-            console.log('Game stats:', stats);
-        } else {
-            alert('You have run out of mistakes. Game over.');
-        }
-
-        // Disable all buttons
-        const buttons = this.gameGrid.querySelectorAll('button');
-        buttons.forEach(button => button.disabled = true);
-        this.submitButton.disabled = true;
-        this.shuffleButton.disabled = true;
-        this.deselectAllButton.disabled = true;
+    private endGame() {
+        this.saveGameState();
+        this.updateScreen();
     }
 
-    private showSolvedScreen() {
-        const root = document.getElementById('root')!;
-        root.innerHTML = `
-            <main class="flex-grow px-4 py-6 flex flex-col items-center">
-                <!-- Headline Text -->
-                <h1 class="text-3xl font-bold leading-tight tracking-[-0.015em] text-center pb-2">Nicely Done!</h1>
-                <p class="text-center text-gray-600 dark:text-gray-400 mb-6">You found all four connections.</p>
-                <!-- Solved Puzzle Grid -->
-                <div class="w-full max-w-md flex flex-col gap-3">
-                    ${this.getSolvedGroupsHTML()}
-                </div>
-                <!-- Performance Metrics -->
-                <div class="mt-8 text-center">
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Mistakes: <span class="font-bold text-text-light dark:text-text-dark">${4 - this.mistakes}</span></p>
-                </div>
-                <!-- Action Buttons -->
-                <div class="w-full max-w-md mt-8 flex flex-col gap-4">
-                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-base font-bold leading-normal text-white">
-                        <span class="material-symbols-outlined">share</span>
-                        <span>Share Your Results</span>
-                    </button>
-                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-bold leading-normal text-text-light dark:text-text-dark hover:bg-gray-100 dark:hover:bg-card-dark">
-                        <span>View All Puzzles</span>
-                    </button>
-                </div>
-                <div class="h-8"></div> <!-- Spacer -->
-            </main>
-        `;
+    private populateEndScreen(screen: HTMLElement) {
+        if (this.gameState === 'won') {
+            const solvedGroupsContainer = screen.querySelector('#success-solved-groups');
+            if (solvedGroupsContainer) {
+                solvedGroupsContainer.innerHTML = this.getSolvedGroupsHTML();
+            }
+            const mistakesCount = screen.querySelector('#success-mistakes');
+            if (mistakesCount) {
+                mistakesCount.textContent = (4 - this.mistakes).toString();
+            }
+        } else if (this.gameState === 'lost') {
+            const solvedGroupsContainer = screen.querySelector('#failure-solved-groups');
+            if (solvedGroupsContainer) {
+                solvedGroupsContainer.innerHTML = this.getSolvedGroupsHTML();
+            }
+        }
     }
 
     private getSolvedGroupsHTML(): string {
@@ -412,7 +359,14 @@ class ConnectionsGame {
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        return this.solvedGroupOrder.map(key => {
+        // Ensure solvedGroupOrder is sorted by level
+        const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
+            const levelA = this.currentPuzzle!.groups[a].level;
+            const levelB = this.currentPuzzle!.groups[b].level;
+            return levelA - levelB;
+        });
+
+        return sortedGroupOrder.map(key => {
             const group = this.solvedGroups[key];
             return `
                 <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
