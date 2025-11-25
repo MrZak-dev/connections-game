@@ -1,4 +1,4 @@
-import { GameStorage } from './storage.js';
+import { GameStorage, GameState } from './storage.js';
 
 interface Puzzle {
     date: string;
@@ -14,11 +14,17 @@ interface Puzzle {
 class ConnectionsGame {
     private puzzles: Puzzle[] = [];
     private currentPuzzle: Puzzle | null = null;
+    private puzzleNumber = 1;
     private words: string[] = [];
     private selectedWords: string[] = [];
     private mistakes: number = 4;
     private solvedGroups: { [key: string]: { description: string; words: string[] } } = {};
     private solvedGroupOrder: string[] = [];
+    private gameState: 'playing' | 'won' | 'lost' = 'playing';
+
+    private gameScreen: HTMLElement = document.getElementById('game-screen')!;
+    private successScreen: HTMLElement = document.getElementById('success-screen')!;
+    private failureScreen: HTMLElement = document.getElementById('failure-screen')!;
 
     private gameGrid: HTMLElement = document.getElementById('game-grid')!;
     private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
@@ -45,21 +51,45 @@ class ConnectionsGame {
     private startNewGame() {
         if (this.puzzles.length > 0) {
             this.currentPuzzle = this.puzzles[0];
+            this.puzzleNumber = 1;
+
             const savedState = GameStorage.loadState();
-            if (savedState) {
+
+            if (savedState && savedState.lastPlayed === new Date().toISOString().slice(0, 10)) {
                 this.mistakes = savedState.mistakes;
                 this.solvedGroups = savedState.solvedGroups;
                 this.solvedGroupOrder = savedState.solvedGroupOrder;
-                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
+                this.gameState = savedState.gameState;
+                this.puzzleNumber = savedState.puzzleNumber;
+                 this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
                     .filter(word => !Object.values(this.solvedGroups).flatMap(g => g.words).includes(word));
                 this.renderSolvedGroups();
-                this.shuffleWords(false);
             } else {
-                this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
-                this.shuffleWords(false);
+                 this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words);
             }
+
             this.addEventListeners();
-            this.updateMistakesCounter();
+            this.updateScreen();
+            if (this.gameState === 'playing') {
+                this.shuffleWords(false);
+                this.updateMistakesCounter();
+            }
+        }
+    }
+
+    private updateScreen() {
+        this.gameScreen.classList.add('hidden');
+        this.successScreen.classList.add('hidden');
+        this.failureScreen.classList.add('hidden');
+
+        if (this.gameState === 'playing') {
+            this.gameScreen.classList.remove('hidden');
+        } else if (this.gameState === 'won') {
+            this.populateEndScreen(this.successScreen);
+            this.successScreen.classList.remove('hidden');
+        } else if (this.gameState === 'lost') {
+            this.populateEndScreen(this.failureScreen);
+            this.failureScreen.classList.remove('hidden');
         }
     }
 
@@ -68,7 +98,7 @@ class ConnectionsGame {
         const buttons: { button: HTMLButtonElement, text: SVGTextElement }[] = [];
         this.words.forEach(word => {
             const button = document.createElement('button');
-            button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700 p-2 uppercase tracking-wide text-gray-900 dark:text-gray-100 font-bold transition-colors hover:bg-gray-300 dark:hover:bg-gray-600';
+            button.className = 'word-button flex h-20 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 uppercase tracking-wide text-gray-900 font-bold transition-colors hover:bg-gray-300';
             button.dataset.word = word;
 
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -109,13 +139,13 @@ class ConnectionsGame {
         const word = button.dataset.word!;
         if (this.selectedWords.includes(word)) {
             this.selectedWords = this.selectedWords.filter(w => w !== word);
-            button.classList.remove('bg-gray-900', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
-            button.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
+            button.classList.remove('bg-gray-900', 'text-gray-100');
+            button.classList.add('bg-gray-200', 'text-gray-900', 'hover:bg-gray-300');
         } else {
             if (this.selectedWords.length < 4) {
                 this.selectedWords.push(word);
-                button.classList.add('bg-gray-900', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
-                button.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
+                button.classList.add('bg-gray-900', 'text-gray-100');
+                button.classList.remove('bg-gray-200', 'text-gray-900', 'hover:bg-gray-300');
             }
         }
         this.updateSubmitButtonState();
@@ -124,12 +154,12 @@ class ConnectionsGame {
     private updateSubmitButtonState() {
         if (this.selectedWords.length === 4) {
             this.submitButton.disabled = false;
-            this.submitButton.classList.remove('opacity-50', 'bg-gray-300', 'dark:bg-gray-600', 'text-gray-500', 'dark:text-gray-400');
-            this.submitButton.classList.add('bg-gray-800', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
+            this.submitButton.classList.remove('opacity-50', 'bg-gray-300', 'text-gray-500');
+            this.submitButton.classList.add('bg-gray-800', 'text-gray-100');
         } else {
             this.submitButton.disabled = true;
-            this.submitButton.classList.add('opacity-50', 'bg-gray-300', 'dark:bg-gray-600', 'text-gray-500', 'dark:text-gray-400');
-            this.submitButton.classList.remove('bg-gray-800', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
+            this.submitButton.classList.add('opacity-50', 'bg-gray-300', 'text-gray-500');
+            this.submitButton.classList.remove('bg-gray-800', 'text-gray-100');
         }
     }
 
@@ -137,6 +167,11 @@ class ConnectionsGame {
         this.shuffleButton.addEventListener('click', () => this.shuffleWords());
         this.deselectAllButton.addEventListener('click', () => this.deselectAll());
         this.submitButton.addEventListener('click', () => this.submitSelection());
+
+        document.getElementById('share-results-button')?.addEventListener('click', () => this.shareResults());
+        document.getElementById('show-solution-button')?.addEventListener('click', () => this.showSolution());
+        document.getElementById('view-stats-button-success')?.addEventListener('click', () => this.viewStats());
+        document.getElementById('view-stats-button-failure')?.addEventListener('click', () => this.viewStats());
     }
 
     private shuffleWords(deselect: boolean = true) {
@@ -154,8 +189,8 @@ class ConnectionsGame {
         this.selectedWords = [];
         const buttons = this.gameGrid.querySelectorAll('button');
         buttons.forEach(button => {
-            button.classList.remove('bg-gray-900', 'dark:bg-gray-200', 'text-gray-100', 'dark:text-gray-900');
-            button.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-gray-100', 'hover:bg-gray-300', 'dark:hover:bg-gray-600');
+            button.classList.remove('bg-gray-900', 'text-gray-100');
+            button.classList.add('bg-gray-200', 'text-gray-900', 'hover:bg-gray-300');
         });
         this.updateSubmitButtonState();
     }
@@ -241,18 +276,23 @@ class ConnectionsGame {
         }
 
         this.updateSubmitButtonState();
-        this.saveGameState();
+
         if (this.solvedGroupOrder.length === 4) {
-            this.endGame(true);
+            this.gameState = 'won';
+            this.endGame();
+        } else {
+             this.saveGameState();
         }
     }
 
     private saveGameState() {
-        const state = {
+        const state: GameState = {
+            puzzleNumber: this.puzzleNumber,
             mistakes: this.mistakes,
             solvedGroups: this.solvedGroups,
             solvedGroupOrder: this.solvedGroupOrder,
-            lastPlayed: new Date().toISOString().slice(0, 10)
+            lastPlayed: new Date().toISOString().slice(0, 10),
+            gameState: this.gameState
         };
         GameStorage.saveState(state);
     }
@@ -311,9 +351,11 @@ class ConnectionsGame {
                              this.updateMistakesCounter();
                              this.deselectAll();
                              if (this.mistakes === 0) {
-                                 this.endGame(false);
+                                 this.gameState = 'lost';
+                                 this.endGame();
+                             } else {
+                                this.saveGameState();
                              }
-                             this.saveGameState();
                         }, { once: true });
                     }
                 }
@@ -325,11 +367,11 @@ class ConnectionsGame {
         const dots = this.mistakesCounter.children;
         for (let i = 0; i < 4; i++) {
             if (i < this.mistakes) {
-                dots[i].classList.add('bg-gray-800', 'dark:bg-gray-200');
-                dots[i].classList.remove('bg-gray-400', 'dark:bg-gray-600');
+                dots[i].classList.add('bg-gray-800');
+                dots[i].classList.remove('bg-gray-400');
             } else {
-                dots[i].classList.remove('bg-gray-800', 'dark:bg-gray-200');
-                dots[i].classList.add('bg-gray-400', 'dark:bg-gray-600');
+                dots[i].classList.remove('bg-gray-800');
+                dots[i].classList.add('bg-gray-400');
             }
         }
     }
@@ -355,54 +397,35 @@ class ConnectionsGame {
         });
     }
 
-    private endGame(isWin: boolean) {
-        if (isWin) {
-            this.showSolvedScreen();
-            const stats = GameStorage.loadStats();
-            stats.gamesPlayed++;
-            stats.mistakesPerGame.push(4 - this.mistakes);
-            GameStorage.saveStats(stats);
-            console.log('Game stats:', stats);
-        } else {
-            alert('You have run out of mistakes. Game over.');
-        }
-
-        // Disable all buttons
-        const buttons = this.gameGrid.querySelectorAll('button');
-        buttons.forEach(button => button.disabled = true);
-        this.submitButton.disabled = true;
-        this.shuffleButton.disabled = true;
-        this.deselectAllButton.disabled = true;
+    private endGame() {
+        this.saveGameState();
+        this.updateScreen();
     }
 
-    private showSolvedScreen() {
-        const root = document.getElementById('root')!;
-        root.innerHTML = `
-            <main class="flex-grow px-4 py-6 flex flex-col items-center">
-                <!-- Headline Text -->
-                <h1 class="text-3xl font-bold leading-tight tracking-[-0.015em] text-center pb-2">Nicely Done!</h1>
-                <p class="text-center text-gray-600 dark:text-gray-400 mb-6">You found all four connections.</p>
-                <!-- Solved Puzzle Grid -->
-                <div class="w-full max-w-md flex flex-col gap-3">
-                    ${this.getSolvedGroupsHTML()}
-                </div>
-                <!-- Performance Metrics -->
-                <div class="mt-8 text-center">
-                    <p class="text-lg text-gray-700 dark:text-gray-300">Mistakes: <span class="font-bold text-text-light dark:text-text-dark">${4 - this.mistakes}</span></p>
-                </div>
-                <!-- Action Buttons -->
-                <div class="w-full max-w-md mt-8 flex flex-col gap-4">
-                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-6 py-3 text-base font-bold leading-normal text-white">
-                        <span class="material-symbols-outlined">share</span>
-                        <span>Share Your Results</span>
-                    </button>
-                    <button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-6 py-3 text-base font-bold leading-normal text-text-light dark:text-text-dark hover:bg-gray-100 dark:hover:bg-card-dark">
-                        <span>View All Puzzles</span>
-                    </button>
-                </div>
-                <div class="h-8"></div> <!-- Spacer -->
-            </main>
-        `;
+    private populateEndScreen(screen: HTMLElement) {
+        const puzzleNumberSpan = screen.querySelector('[id$="-puzzle-number"]');
+        if (puzzleNumberSpan) {
+            puzzleNumberSpan.textContent = this.puzzleNumber.toString();
+        }
+
+        this.updateCountdown();
+
+        if (this.gameState === 'won') {
+            const solvedGroupsContainer = screen.querySelector('#success-solved-groups');
+            if (solvedGroupsContainer) {
+                solvedGroupsContainer.innerHTML = this.getSolvedGroupsHTML();
+            }
+            const mistakesCount = screen.querySelector('#success-mistakes');
+            if (mistakesCount) {
+                mistakesCount.textContent = (4 - this.mistakes).toString();
+            }
+        } else if (this.gameState === 'lost') {
+            const solvedGroupsContainer = screen.querySelector('#failure-solved-groups');
+            if (solvedGroupsContainer) {
+                // Initially, only show the groups the user solved.
+                solvedGroupsContainer.innerHTML = this.getSolvedGroupsHTML();
+            }
+        }
     }
 
     private getSolvedGroupsHTML(): string {
@@ -412,7 +435,14 @@ class ConnectionsGame {
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        return this.solvedGroupOrder.map(key => {
+        // Ensure solvedGroupOrder is sorted by level
+        const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
+            const levelA = this.currentPuzzle!.groups[a].level;
+            const levelB = this.currentPuzzle!.groups[b].level;
+            return levelA - levelB;
+        });
+
+        return sortedGroupOrder.map(key => {
             const group = this.solvedGroups[key];
             return `
                 <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
@@ -421,6 +451,115 @@ class ConnectionsGame {
                 </div>
             `;
         }).join('');
+    }
+
+    private getAllGroupsHTML(): string {
+        const groupColors: { [key: string]: string } = {
+            'yellow': 'bg-connections-yellow',
+            'green': 'bg-connections-green',
+            'blue': 'bg-connections-blue',
+            'purple': 'bg-connections-purple',
+        };
+
+        const allGroupKeys = Object.keys(this.currentPuzzle!.groups);
+        const sortedGroupKeys = allGroupKeys.sort((a, b) => {
+            const levelA = this.currentPuzzle!.groups[a].level;
+            const levelB = this.currentPuzzle!.groups[b].level;
+            return levelA - levelB;
+        });
+
+        return sortedGroupKeys.map(key => {
+            const group = this.currentPuzzle!.groups[key];
+            const groupKey = Object.keys(groupColors)[group.level - 1];
+            return `
+                <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[groupKey]} text-black">
+                    <p class="text-base font-bold leading-tight tracking-[-0.015em] uppercase">${group.description}</p>
+                    <p class="text-lg font-semibold leading-normal uppercase">${group.words.join(', ')}</p>
+                </div>
+            `;
+        }).join('');
+    }
+
+    private updateCountdown() {
+        const successTimer = document.getElementById('success-countdown-timer');
+        const failureTimer = document.getElementById('failure-countdown-timer');
+
+        const update = () => {
+            const now = new Date();
+            const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            const diff = tomorrow.getTime() - now.getTime();
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (successTimer) successTimer.textContent = formattedTime;
+            if (failureTimer) failureTimer.textContent = formattedTime;
+        };
+
+        update();
+        setInterval(update, 1000);
+    }
+
+    private shareResults() {
+        if (!this.currentPuzzle) return;
+
+        const colorEmoji: { [key: string]: string } = {
+            'yellow': '🟨',
+            'green': '🟩',
+            'blue': '🟦',
+            'purple': '🟪',
+        };
+
+        // Sort the solved groups by their level for a consistent share text
+        const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
+            const levelA = this.currentPuzzle!.groups[a].level;
+            const levelB = this.currentPuzzle!.groups[b].level;
+            return levelA - levelB;
+        });
+
+        const grid = sortedGroupOrder.map(key => {
+            const emoji = colorEmoji[key];
+            return Array(4).fill(emoji).join('');
+        }).join('\n');
+
+        const shareText = `Connections\nPuzzle #${this.puzzleNumber}\n${grid}`;
+
+        navigator.clipboard.writeText(shareText).then(() => {
+            console.log('Clipboard write successful');
+            const shareButton = document.getElementById('share-results-button') as HTMLButtonElement;
+            if (shareButton) {
+                const originalText = shareButton.textContent;
+                shareButton.textContent = 'Copied!';
+                shareButton.disabled = true;
+                setTimeout(() => {
+                    shareButton.textContent = originalText;
+                    shareButton.disabled = false;
+                }, 2000);
+            }
+        }).catch(err => {
+            console.error('Failed to copy results:', err);
+            console.log('Clipboard write failed:', err);
+            alert('Could not copy results to clipboard.');
+        });
+    }
+
+    private showSolution() {
+        const solvedGroupsContainer = this.failureScreen.querySelector('#failure-solved-groups');
+        if (solvedGroupsContainer) {
+            solvedGroupsContainer.innerHTML = this.getAllGroupsHTML();
+        }
+        // Optionally, hide the "Show Solution" button after it's clicked
+        const showSolutionButton = document.getElementById('show-solution-button');
+        if (showSolutionButton) {
+            showSolutionButton.style.display = 'none';
+        }
+    }
+
+    private viewStats() {
+        // Placeholder for view stats functionality
+        alert('Viewing stats!');
     }
 }
 
@@ -431,40 +570,5 @@ document.addEventListener('DOMContentLoaded', () => {
         location.reload();
     };
 });
-
-declare global {
-    interface Window {
-        tailwind: any;
-    }
-}
-
-window.tailwind.config = {
-    darkMode: "class",
-    theme: {
-        extend: {
-            colors: {
-                "primary": "#135bec",
-                "background-light": "#f6f6f8",
-                "background-dark": "#101622",
-                "text-light": "#121212",
-                "text-dark": "#f0f0f0",
-                "card-dark": "#1a2230",
-                "connections-yellow": "#F9DF69",
-                "connections-green": "#A0C35A",
-                "connections-blue": "#B5E1EA",
-                "connections-purple": "#D8B4E2",
-            },
-            fontFamily: {
-                "display": ["Work Sans", "sans-serif"]
-            },
-            borderRadius: {
-                "DEFAULT": "0.25rem",
-                "lg": "0.5rem",
-                "xl": "0.75rem",
-                "full": "9999px"
-            },
-        },
-    },
-};
 
 export {};

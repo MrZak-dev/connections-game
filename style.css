@@ -2,11 +2,31 @@ body {
     font-family: 'Work Sans', sans-serif;
 }
 
+.hidden {
+    display: none;
+}
+
 .word-button svg text {
     font-weight: bold;
     text-transform: uppercase;
     font-size: 20px; /* A base size for SVG scaling */
     fill: currentColor;
+}
+
+.bg-connections-yellow {
+    background-color: #F9DF69;
+}
+
+.bg-connections-green {
+    background-color: #A0C35A;
+}
+
+.bg-connections-blue {
+    background-color: #B5E1EA;
+}
+
+.bg-connections-purple {
+    background-color: #D8B4E2;
 }
 
 @keyframes scale-up {

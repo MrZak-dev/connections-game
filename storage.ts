@@ -1,8 +1,10 @@
-interface GameState {
+export interface GameState {
+    puzzleNumber: number;
     mistakes: number;
     solvedGroups: { [key: string]: { description: string; words: string[] } };
     solvedGroupOrder: string[];
     lastPlayed: string;
+    gameState: 'playing' | 'won' | 'lost';
 }
 
 interface GameStats {
