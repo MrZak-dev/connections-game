@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Left Side Menu Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              "display": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+      .material-symbols-outlined.fill-1 {
+        font-variation-settings: 'FILL' 1;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA6iwxTahOPOiloc1lazi-yRZS5_5H9ceExP3CawVfAkAqDPRU3_dj0zZBVrmL4bYw6tl3HOy1FZZHjoFfEsHqluuVpnW3Vqy4-aBQBTXqlMfXvc3n19ZPYJBvID6un9YMvHlC8Jo6K1UVzMb--i6CZbi5JWmES3ckGZ0E_xH0h5Ep-5KxTVxKtrOPdJblB3TrzGy4DVpnQ54sbF-S9F0y0m5wyu6o2Ju_6SWLEUq36JUzt2I7bsVU8y1hgncYQKFRNybQIKonA2So'); background-size: cover; background-position: center;">
+<!-- Dimmed background content -->
+<div class="absolute inset-0 z-10 size-full min-h-screen bg-[#141414]/40 dark:bg-background-dark/60"></div>
+<!-- Navigation Drawer -->
+<div class="absolute left-0 top-0 z-50 flex h-full min-h-screen w-full">
+<div class="flex h-full min-h-screen w-10/12 max-w-sm flex-col bg-background-light dark:bg-background-dark shadow-2xl">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-8">
+<!-- Header -->
+<div class="px-4 pt-8 pb-4">
+<h1 class="text-3xl font-bold text-slate-800 dark:text-slate-200">Connections</h1>
+</div>
+<!-- Navigation List -->
+<ul class="flex flex-col gap-2">
+<li class="flex h-12 items-center gap-4 rounded-lg bg-primary/20 px-4">
+<span class="material-symbols-outlined text-primary dark:text-primary fill-1">grid_view</span>
+<p class="text-base font-semibold leading-tight text-primary dark:text-primary truncate">Home</p>
+</li>
+<li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">help</span>
+<p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">How to Play</p>
+</li>
+<li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">archive</span>
+<p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Archive</p>
+</li>
+</ul>
+<!-- Divider -->
+<hr class="border-t border-slate-200 dark:border-slate-800 mx-4"/>
+<!-- Secondary Navigation List -->
+<ul class="flex flex-col gap-2">
+<li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">settings</span>
+<p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Settings</p>
+</li>
+<li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">info</span>
+<p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">About</p>
+</li>
+<li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">chat</span>
+<p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Send Feedback</p>
+</li>
+</ul>
+</div>
+<!-- Footer Section -->
+<div class="px-4 pb-6 pt-4">
+<p class="text-xs text-slate-400 dark:text-slate-500">Version 1.2.3</p>
+<p class="text-xs text-slate-400 dark:text-slate-500">Privacy Policy</p>
+</div>
+</div>
+</div>
+<!-- Empty area to close the drawer -->
+<div class="flex-grow"></div>
+</div>
+</div>
+</body></html>
