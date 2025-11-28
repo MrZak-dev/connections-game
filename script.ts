@@ -197,29 +197,17 @@ class ConnectionsGame {
 
     private showHowToPlayModal() {
         this.howToPlayModal.classList.remove('hidden');
-        const modalContent = this.howToPlayModal.querySelector('div');
-        if (modalContent) {
-            modalContent.classList.remove('slide-out-top');
-            modalContent.classList.add('slide-in-top');
-        }
     }
 
     private hideHowToPlayModal() {
-        const modalContent = this.howToPlayModal.querySelector('div');
-        if (modalContent) {
-            modalContent.classList.remove('slide-in-top');
-            modalContent.classList.add('slide-out-top');
-            modalContent.addEventListener('animationend', () => {
-                this.howToPlayModal.classList.add('hidden');
-            }, { once: true });
-        }
+        this.howToPlayModal.classList.add('hidden');
     }
 
     private showLeftSideMenu() {
         const currentScreen = this.getCurrentScreen();
         currentScreen.appendChild(this.leftSideMenu);
-        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
         this.leftSideMenu.classList.remove('hidden');
+        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
         leftSideMenuContent.classList.remove('slide-out-left');
         leftSideMenuContent.classList.add('slide-in-left');
     }
