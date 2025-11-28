@@ -216,8 +216,8 @@ class ConnectionsGame {
     }
 
     private showLeftSideMenu() {
-        const root = document.getElementById('root')!;
-        root.classList.add('menu-open');
+        const currentScreen = this.getCurrentScreen();
+        currentScreen.appendChild(this.leftSideMenu);
         const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
         this.leftSideMenu.classList.remove('hidden');
         leftSideMenuContent.classList.remove('slide-out-left');
@@ -225,13 +225,12 @@ class ConnectionsGame {
     }
 
     private hideLeftSideMenu(callback?: () => void) {
-        const root = document.getElementById('root')!;
-        root.classList.remove('menu-open');
         const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
         leftSideMenuContent.classList.remove('slide-in-left');
         leftSideMenuContent.classList.add('slide-out-left');
         leftSideMenuContent.addEventListener('animationend', () => {
             this.leftSideMenu.classList.add('hidden');
+            document.getElementById('root')!.appendChild(this.leftSideMenu);
             if (callback) {
                 callback();
             }

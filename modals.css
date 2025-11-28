@@ -1,11 +1,21 @@
 #left-side-menu-content {
     animation-duration: 0.3s;
     animation-timing-function: ease-in-out;
+    background-color: #f6f6f8;
 }
 
 #how-to-play-modal > div {
     animation-duration: 0.3s;
     animation-timing-function: ease-in-out;
+    background-color: #f6f6f8;
+}
+
+.dark #left-side-menu-content {
+    background-color: #101622;
+}
+
+.dark #how-to-play-modal > div {
+    background-color: #101622;
 }
 
 .slide-in-left {
