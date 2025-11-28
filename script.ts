@@ -196,29 +196,22 @@ class ConnectionsGame {
     }
 
     private showHowToPlayModal() {
-        this.howToPlayModal.classList.remove('hidden');
+        this.howToPlayModal.classList.toggle('hidden');
     }
 
     private hideHowToPlayModal() {
-        this.howToPlayModal.classList.add('hidden');
+        this.howToPlayModal.classList.toggle('hidden');
     }
 
     private showLeftSideMenu() {
-        const currentScreen = this.getCurrentScreen();
-        currentScreen.appendChild(this.leftSideMenu);
         this.leftSideMenu.classList.remove('hidden');
-        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
-        leftSideMenuContent.classList.remove('slide-out-left');
-        leftSideMenuContent.classList.add('slide-in-left');
+        this.leftSideMenu.classList.remove('menu-hidden');
     }
 
     private hideLeftSideMenu(callback?: () => void) {
-        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
-        leftSideMenuContent.classList.remove('slide-in-left');
-        leftSideMenuContent.classList.add('slide-out-left');
-        leftSideMenuContent.addEventListener('animationend', () => {
+        this.leftSideMenu.classList.add('menu-hidden');
+        this.leftSideMenu.addEventListener('transitionend', () => {
             this.leftSideMenu.classList.add('hidden');
-            document.getElementById('root')!.appendChild(this.leftSideMenu);
             if (callback) {
                 callback();
             }

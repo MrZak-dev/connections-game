@@ -1,75 +1,17 @@
 #left-side-menu-content {
-    animation-duration: 0.3s;
-    animation-timing-function: ease-in-out;
     background-color: #f6f6f8;
+    transition: transform 0.3s ease-in-out;
 }
 
-#how-to-play-modal > div {
-    animation-duration: 0.3s;
-    animation-timing-function: ease-in-out;
-    background-color: #f6f6f8;
+#how-to-play-modal {
+    background-color: rgba(20, 20, 20, 0.4);
 }
 
 .dark #left-side-menu-content {
     background-color: #101622;
 }
 
-.dark #how-to-play-modal > div {
-    background-color: #101622;
-}
 
-.slide-in-left {
-    animation-name: slideInFromLeft;
-}
-
-.slide-out-left {
-    animation-name: slideOutToLeft;
-}
-
-.slide-in-top {
-    animation-name: slideInFromTop;
-}
-
-.slide-out-top {
-    animation-name: slideOutToTop;
-}
-
-/* Slide in from left animation */
-@keyframes slideInFromLeft {
-    from {
-        transform: translateX(-100%);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-/* Slide out to left animation */
-@keyframes slideOutToLeft {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(-100%);
-    }
-}
-
-/* Slide in from top animation */
-@keyframes slideInFromTop {
-    from {
-        transform: translateY(-100%);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
-/* Slide out to top animation */
-@keyframes slideOutToTop {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(-100%);
-    }
+.menu-hidden {
+    transform: translateX(-100%);
 }
