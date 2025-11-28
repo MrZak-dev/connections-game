@@ -1,0 +1,65 @@
+#left-side-menu-content {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
+
+#how-to-play-modal > div {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
+
+.slide-in-left {
+    animation-name: slideInFromLeft;
+}
+
+.slide-out-left {
+    animation-name: slideOutToLeft;
+}
+
+.slide-in-top {
+    animation-name: slideInFromTop;
+}
+
+.slide-out-top {
+    animation-name: slideOutToTop;
+}
+
+/* Slide in from left animation */
+@keyframes slideInFromLeft {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Slide out to left animation */
+@keyframes slideOutToLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* Slide in from top animation */
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Slide out to top animation */
+@keyframes slideOutToTop {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}

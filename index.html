@@ -41,19 +41,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-background-light font-display text-gray-800">
-    <div id="root" class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+    <div id="root" class="relative flex h-auto min-h-screen w-full flex-col group/design-root">
 
         <!-- Game Screen -->
-        <div id="game-screen" class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
+        <div id="game-screen" class="mx-auto flex w-full max-w-md flex-col px-4 pt-4 relative overflow-hidden">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="menu-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                     <p id="puzzle-date" class="text-sm text-gray-500">Puzzle #1</p>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="help-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -80,15 +80,15 @@
         </div>
 
         <!-- Success Screen -->
-        <div id="success-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
+        <div id="success-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center relative overflow-hidden">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="menu-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="help-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -105,15 +105,15 @@
         </div>
 
         <!-- Failure Screen -->
-        <div id="failure-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
+        <div id="failure-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center relative overflow-hidden">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="menu-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button class="help-button flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -124,6 +124,127 @@
             <div class="mt-8 flex flex-col gap-2">
                 <button id="show-solution-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-800 text-gray-100 text-base font-bold">Show Solution</button>
                 <button id="view-stats-button-failure" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 border border-gray-300 text-base font-bold">View Stats</button>
+            </div>
+        </div>
+
+        <!-- Left Side Menu -->
+        <div id="left-side-menu" class="hidden absolute left-0 top-0 z-50 flex h-full min-h-screen w-full">
+            <div id="left-side-menu-content" class="flex h-full min-h-screen w-10/12 max-w-sm flex-col bg-background-light dark:bg-background-dark shadow-2xl">
+                <div class="flex h-full flex-col justify-between p-4">
+                    <div class="flex flex-col gap-8">
+                        <div class="px-4 pt-8 pb-4">
+                            <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-200">Connections</h1>
+                        </div>
+                        <ul class="flex flex-col gap-2">
+                            <li class="flex h-12 items-center gap-4 rounded-lg bg-primary/20 px-4">
+                                <span class="material-symbols-outlined text-primary dark:text-primary fill-1">grid_view</span>
+                                <p class="text-base font-semibold leading-tight text-primary dark:text-primary truncate">Home</p>
+                            </li>
+                            <li id="menu-how-to-play-button" class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+                                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">help</span>
+                                <p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">How to Play</p>
+                            </li>
+                            <li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+                                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">archive</span>
+                                <p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Archive</p>
+                            </li>
+                        </ul>
+                        <hr class="border-t border-slate-200 dark:border-slate-800 mx-4"/>
+                        <ul class="flex flex-col gap-2">
+                            <li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+                                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">settings</span>
+                                <p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Settings</p>
+                            </li>
+                            <li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+                                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">info</span>
+                                <p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">About</p>
+                            </li>
+                            <li class="flex h-12 items-center gap-4 rounded-lg px-4 hover:bg-slate-200/50 dark:hover:bg-slate-800">
+                                <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">chat</span>
+                                <p class="text-base font-medium leading-tight text-slate-700 dark:text-slate-300 truncate">Send Feedback</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="px-4 pb-6 pt-4">
+                        <p class="text-xs text-slate-400 dark:text-slate-500">Version 1.2.3</p>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">Privacy Policy</p>
+                    </div>
+                </div>
+            </div>
+            <div id="left-side-menu-close-area" class="flex-grow"></div>
+        </div>
+
+        <!-- How to Play Modal -->
+        <div id="how-to-play-modal" class="hidden absolute inset-0 z-40 min-h-screen bg-[#141414]/40 dark:bg-background-dark/60 p-4 sm:p-6">
+            <div class="relative m-auto flex h-full max-h-[95vh] w-full max-w-md flex-col overflow-hidden rounded-xl bg-background-light dark:bg-background-dark shadow-2xl">
+                <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between shrink-0">
+                    <div class="flex size-12 shrink-0 items-center"></div>
+                    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">How to Play</h2>
+                    <div class="flex w-12 items-center justify-end">
+                        <button id="how-to-play-close-button" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white gap-2 text-base font-bold leading-normal tracking-[-0.015em] min-w-0 p-0">
+                            <span class="material-symbols-outlined text-xl">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex-1 overflow-y-auto px-4">
+                    <p class="text-slate-900 dark:text-white text-base font-normal leading-normal pb-3 pt-1 text-center">Group words that share a common thread.</p>
+                    <div class="flex flex-col gap-2 py-4">
+                        <div class="flex items-start gap-4 bg-background-light dark:bg-background-dark py-2 min-h-[72px]">
+                            <div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 shrink-0 size-12">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">Find Groups of Four</p>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">Identify four items that have something in common. Categories can be anything from book titles to words that start with the same letter.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-background-light dark:bg-background-dark py-2 min-h-[72px]">
+                            <div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 shrink-0 size-12">
+                                <span class="material-symbols-outlined">check_circle</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">Select &amp; Submit</p>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">Tap to select four words, then tap the 'Submit' button to lock in your guess.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 bg-background-light dark:bg-background-dark py-2 min-h-[72px]">
+                            <div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 shrink-0 size-12">
+                                <span class="material-symbols-outlined">warning</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">Four Mistakes Allowed</p>
+                                <p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">You can make up to four mistakes before the game ends. Keep a close eye on your remaining attempts.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="my-4 p-4 bg-gray-100 dark:bg-gray-900/50 rounded-lg">
+                        <div class="grid grid-cols-4 gap-2 text-center">
+                            <div class="col-span-4 flex items-center justify-between rounded-lg bg-connections-yellow p-3 text-black">
+                                <div class="flex flex-col text-left">
+                                    <p class="font-bold text-sm">THINGS IN A FAIRY TALE</p>
+                                    <p class="text-sm">BEANSTALK, CASTLE, OGRE, WOLF</p>
+                                </div>
+                            </div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">BASS</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">FLOUNDER</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">COD</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">PERCH</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">BRANCH</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">TRUNK</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">ROOT</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">LEAF</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">TABLE</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">FAMILY</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">WATER</div>
+                            <div class="flex h-12 items-center justify-center rounded-md bg-gray-200 dark:bg-gray-700 text-slate-900 dark:text-white text-sm font-semibold">LINE</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 bg-background-light dark:bg-background-dark shrink-0">
+                    <button id="how-to-play-play-button" class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-base font-bold">
+                        <span class="truncate">Play</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

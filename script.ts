@@ -25,6 +25,8 @@ class ConnectionsGame {
     private gameScreen: HTMLElement = document.getElementById('game-screen')!;
     private successScreen: HTMLElement = document.getElementById('success-screen')!;
     private failureScreen: HTMLElement = document.getElementById('failure-screen')!;
+    private howToPlayModal: HTMLElement = document.getElementById('how-to-play-modal')!;
+    private leftSideMenu: HTMLElement = document.getElementById('left-side-menu')!;
 
     private gameGrid: HTMLElement = document.getElementById('game-grid')!;
     private mistakesCounter: HTMLElement = document.getElementById('mistakes-counter')!;
@@ -172,6 +174,78 @@ class ConnectionsGame {
         document.getElementById('show-solution-button')?.addEventListener('click', () => this.showSolution());
         document.getElementById('view-stats-button-success')?.addEventListener('click', () => this.viewStats());
         document.getElementById('view-stats-button-failure')?.addEventListener('click', () => this.viewStats());
+
+        // How to Play modal listeners
+        document.querySelectorAll('.help-button').forEach(element => {
+            element.addEventListener('click', () => this.showHowToPlayModal());
+        });
+        document.getElementById('how-to-play-close-button')?.addEventListener('click', () => this.hideHowToPlayModal());
+        document.getElementById('how-to-play-play-button')?.addEventListener('click', () => this.hideHowToPlayModal());
+
+        // Left Side Menu listeners
+        document.querySelectorAll('.menu-button').forEach(element => {
+            element.addEventListener('click', (event) => {
+                event.stopPropagation();
+                this.showLeftSideMenu();
+            });
+        });
+        document.getElementById('left-side-menu-close-area')?.addEventListener('click', () => this.hideLeftSideMenu());
+        document.getElementById('menu-how-to-play-button')?.addEventListener('click', () => {
+            this.hideLeftSideMenu(() => this.showHowToPlayModal());
+        });
+    }
+
+    private showHowToPlayModal() {
+        this.howToPlayModal.classList.remove('hidden');
+        const modalContent = this.howToPlayModal.querySelector('div');
+        if (modalContent) {
+            modalContent.classList.remove('slide-out-top');
+            modalContent.classList.add('slide-in-top');
+        }
+    }
+
+    private hideHowToPlayModal() {
+        const modalContent = this.howToPlayModal.querySelector('div');
+        if (modalContent) {
+            modalContent.classList.remove('slide-in-top');
+            modalContent.classList.add('slide-out-top');
+            modalContent.addEventListener('animationend', () => {
+                this.howToPlayModal.classList.add('hidden');
+            }, { once: true });
+        }
+    }
+
+    private showLeftSideMenu() {
+        const root = document.getElementById('root')!;
+        root.classList.add('menu-open');
+        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
+        this.leftSideMenu.classList.remove('hidden');
+        leftSideMenuContent.classList.remove('slide-out-left');
+        leftSideMenuContent.classList.add('slide-in-left');
+    }
+
+    private hideLeftSideMenu(callback?: () => void) {
+        const root = document.getElementById('root')!;
+        root.classList.remove('menu-open');
+        const leftSideMenuContent = this.leftSideMenu.querySelector('#left-side-menu-content') as HTMLElement;
+        leftSideMenuContent.classList.remove('slide-in-left');
+        leftSideMenuContent.classList.add('slide-out-left');
+        leftSideMenuContent.addEventListener('animationend', () => {
+            this.leftSideMenu.classList.add('hidden');
+            if (callback) {
+                callback();
+            }
+        }, { once: true });
+    }
+
+    private getCurrentScreen(): HTMLElement {
+        if (!this.gameScreen.classList.contains('hidden')) {
+            return this.gameScreen;
+        } else if (!this.successScreen.classList.contains('hidden')) {
+            return this.successScreen;
+        } else {
+            return this.failureScreen;
+        }
     }
 
     private shuffleWords(deselect: boolean = true) {
