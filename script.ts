@@ -40,6 +40,7 @@ class ConnectionsGame {
     private helpButton: HTMLButtonElement = document.getElementById('help-button') as HTMLButtonElement;
     private closeHowToPlayModalButton: HTMLButtonElement = document.getElementById('close-how-to-play-modal') as HTMLButtonElement;
     private playButton: HTMLButtonElement = document.getElementById('play-button') as HTMLButtonElement;
+    private closeMenuButton: HTMLButtonElement = document.getElementById('close-menu-button') as HTMLButtonElement;
 
     constructor() {
         this.loadPuzzles();
@@ -179,6 +180,7 @@ class ConnectionsGame {
         this.helpButton.addEventListener('click', () => this.toggleHowToPlayModal());
         this.closeHowToPlayModalButton.addEventListener('click', () => this.toggleHowToPlayModal());
         this.playButton.addEventListener('click', () => this.toggleHowToPlayModal());
+        this.closeMenuButton.addEventListener('click', () => this.toggleMenu());
 
         document.getElementById('share-results-button')?.addEventListener('click', () => this.shareResults());
         document.getElementById('show-solution-button')?.addEventListener('click', () => this.showSolution());
