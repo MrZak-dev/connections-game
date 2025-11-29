@@ -33,6 +33,14 @@ class ConnectionsGame {
     private deselectAllButton: HTMLButtonElement = document.getElementById('deselect-all-button') as HTMLButtonElement;
     private solvedGroupsContainer: HTMLElement = document.getElementById('solved-groups')!;
 
+    private leftSideMenu: HTMLElement = document.getElementById('left-side-menu')!;
+    private howToPlayModal: HTMLElement = document.getElementById('how-to-play-modal')!;
+    private menuOverlay: HTMLElement | null = null;
+    private menuButton: HTMLButtonElement = document.getElementById('menu-button') as HTMLButtonElement;
+    private helpButton: HTMLButtonElement = document.getElementById('help-button') as HTMLButtonElement;
+    private closeHowToPlayModalButton: HTMLButtonElement = document.getElementById('close-how-to-play-modal') as HTMLButtonElement;
+    private playButton: HTMLButtonElement = document.getElementById('play-button') as HTMLButtonElement;
+
     constructor() {
         this.loadPuzzles();
     }
@@ -167,11 +175,36 @@ class ConnectionsGame {
         this.shuffleButton.addEventListener('click', () => this.shuffleWords());
         this.deselectAllButton.addEventListener('click', () => this.deselectAll());
         this.submitButton.addEventListener('click', () => this.submitSelection());
+        this.menuButton.addEventListener('click', () => this.toggleMenu());
+        this.helpButton.addEventListener('click', () => this.toggleHowToPlayModal());
+        this.closeHowToPlayModalButton.addEventListener('click', () => this.toggleHowToPlayModal());
+        this.playButton.addEventListener('click', () => this.toggleHowToPlayModal());
 
         document.getElementById('share-results-button')?.addEventListener('click', () => this.shareResults());
         document.getElementById('show-solution-button')?.addEventListener('click', () => this.showSolution());
         document.getElementById('view-stats-button-success')?.addEventListener('click', () => this.viewStats());
         document.getElementById('view-stats-button-failure')?.addEventListener('click', () => this.viewStats());
+    }
+
+    private toggleMenu() {
+        const isMenuOpen = !this.leftSideMenu.classList.contains('hidden');
+        if (isMenuOpen) {
+            this.leftSideMenu.classList.add('hidden');
+            if (this.menuOverlay) {
+                this.menuOverlay.remove();
+                this.menuOverlay = null;
+            }
+        } else {
+            this.leftSideMenu.classList.remove('hidden');
+            this.menuOverlay = document.createElement('div');
+            this.menuOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 z-40';
+            this.menuOverlay.addEventListener('click', () => this.toggleMenu());
+            document.body.appendChild(this.menuOverlay);
+        }
+    }
+
+    private toggleHowToPlayModal() {
+        this.howToPlayModal.classList.toggle('hidden');
     }
 
     private shuffleWords(deselect: boolean = true) {
