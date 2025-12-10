@@ -46,14 +46,14 @@
         <!-- Game Screen -->
         <div id="game-screen" class="mx-auto flex w-full max-w-md flex-col px-4 pt-4">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button id="menu-button" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                     <p id="puzzle-date" class="text-sm text-gray-500">Puzzle #1</p>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button id="help-button" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -82,13 +82,13 @@
         <!-- Success Screen -->
         <div id="success-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button data-testid="menu-button-success" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button data-testid="help-button-success" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -107,13 +107,13 @@
         <!-- Failure Screen -->
         <div id="failure-screen" class="hidden mx-auto flex w-full max-w-md flex-col px-4 pt-4 text-center">
             <header class="flex items-center justify-between py-2">
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button data-testid="menu-button-failure" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">menu</span>
                 </button>
                 <div class="flex flex-col items-center">
                     <h1 class="text-xl font-bold tracking-tight text-gray-900">Connections</h1>
                 </div>
-                <button class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
+                <button data-testid="help-button-failure" class="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-gray-800">
                     <span class="material-symbols-outlined text-2xl">help</span>
                 </button>
             </header>
@@ -124,6 +124,98 @@
             <div class="mt-8 flex flex-col gap-2">
                 <button id="show-solution-button" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gray-800 text-gray-100 text-base font-bold">Show Solution</button>
                 <button id="view-stats-button-failure" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 border border-gray-300 text-base font-bold">View Stats</button>
+            </div>
+        </div>
+
+        <!-- Left Side Menu -->
+        <div id="left-side-menu" class="hidden fixed inset-y-0 left-0 w-80 bg-white p-6 z-50">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">Connections</h2>
+                <button id="close-menu-button" class="text-gray-500 hover:text-gray-800">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">home</span>Home</a></li>
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">help</span>How to Play</a></li>
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">archive</span>Archive</a></li>
+                    <hr class="my-4">
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">settings</span>Settings</a></li>
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">info</span>About</a></li>
+                    <li class="mb-4"><a href="#" class="flex items-center text-lg"><span class="material-symbols-outlined mr-4">feedback</span>Send Feedback</a></li>
+                </ul>
+            </nav>
+            <div class="absolute bottom-6">
+                <p class="text-sm text-gray-500">Version 1.2.3</p>
+                <a href="#" class="text-sm text-gray-500 underline">Privacy Policy</a>
+            </div>
+        </div>
+
+        <!-- How to Play Modal -->
+        <div id="how-to-play-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-8 max-w-md w-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">How to Play</h2>
+                    <button id="close-how-to-play-modal" class="text-gray-500 hover:text-gray-800">
+                        <span class="material-symbols-outlined text-2xl">close</span>
+                    </button>
+                </div>
+                <div class="max-h-[80vh] overflow-y-auto pr-4">
+                    <p class="mb-6">Group words that share a common thread.</p>
+                    <div class="flex items-start mb-4">
+                        <span class="material-symbols-outlined text-4xl mr-4">search</span>
+                        <div>
+                            <h3 class="font-bold">Find Groups of Four</h3>
+                            <p>Identify four items that have something in common. Categories can be anything from book titles to words that start with the same letter.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mb-4">
+                        <span class="material-symbols-outlined text-4xl mr-4">check_circle</span>
+                        <div>
+                            <h3 class="font-bold">Select & Submit</h3>
+                            <p>Tap to select four words, then tap the 'Submit' button to lock in your guess.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mb-6">
+                        <span class="material-symbols-outlined text-4xl mr-4">warning</span>
+                        <div>
+                            <h3 class="font-bold">Four Mistakes Allowed</h3>
+                            <p>You can make up to four mistakes before the game ends. Keep a close eye on your remaining attempts.</p>
+                        </div>
+                    </div>
+                    <div class="bg-connections-yellow p-4 rounded-lg mb-6">
+                        <p class="font-bold">THINGS IN A FAIRY TALE</p>
+                        <p>BEANSTALK, CASTLE, OGRE, WOLF</p>
+                    </div>
+                    <p class="mb-6">Group words that share a common thread.</p>
+                    <div class="flex items-start mb-4">
+                        <span class="material-symbols-outlined text-4xl mr-4">search</span>
+                        <div>
+                            <h3 class="font-bold">Find Groups of Four</h3>
+                            <p>Identify four items that have something in common. Categories can be anything from book titles to words that start with the same letter.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mb-4">
+                        <span class="material-symbols-outlined text-4xl mr-4">check_circle</span>
+                        <div>
+                            <h3 class="font-bold">Select & Submit</h3>
+                            <p>Tap to select four words, then tap the 'Submit' button to lock in your guess.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mb-6">
+                        <span class="material-symbols-outlined text-4xl mr-4">warning</span>
+                        <div>
+                            <h3 class="font-bold">Four Mistakes Allowed</h3>
+                            <p>You can make up to four mistakes before the game ends. Keep a close eye on your remaining attempts.</p>
+                        </div>
+                    </div>
+                    <div class="bg-connections-yellow p-4 rounded-lg mb-6">
+                        <p class="font-bold">THINGS IN A FAIRY TALE</p>
+                        <p>BEANSTALK, CASTLE, OGRE, WOLF</p>
+                    </div>
+                </div>
+                <button id="play-button" class="w-full bg-gray-800 text-white font-bold py-4 rounded-full">Play</button>
             </div>
         </div>
     </div>
