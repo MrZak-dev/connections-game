@@ -479,14 +479,14 @@ class ConnectionsGame {
             'blue': 'bg-connections-blue',
             'purple': 'bg-connections-purple',
         };
-        // Ensure solvedGroupOrder is sorted by level
-        const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
-            const levelA = this.currentPuzzle!.groups[a].level;
-            const levelB = this.currentPuzzle!.groups[b].level;
-            return levelA - levelB;
-        });
+        // Ensure solvedGroupOrder is sorted by level (sorting is disabled)
+        // const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
+        //     const levelA = this.currentPuzzle!.groups[a].level;
+        //     const levelB = this.currentPuzzle!.groups[b].level;
+        //     return levelA - levelB;
+        // });
 
-        return sortedGroupOrder.map(key => {
+        return this.solvedGroupOrder.map(key => {
             const group = this.solvedGroups[key];
             return `
                 <div class="flex flex-col items-center justify-center rounded-lg p-4 text-center ${groupColors[key]} text-black">
@@ -556,14 +556,14 @@ class ConnectionsGame {
             'purple': '🟪',
         };
 
-        // Sort the solved groups by their level for a consistent share text
-        const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
-            const levelA = this.currentPuzzle!.groups[a].level;
-            const levelB = this.currentPuzzle!.groups[b].level;
-            return levelA - levelB;
-        });
+        // Sort the solved groups by their level for a consistent share text, soring is disabled
+        // const sortedGroupOrder = [...this.solvedGroupOrder].sort((a, b) => {
+        //     const levelA = this.currentPuzzle!.groups[a].level;
+        //     const levelB = this.currentPuzzle!.groups[b].level;
+        //     return levelA - levelB;
+        // });
 
-        const grid = sortedGroupOrder.map(key => {
+        const grid = this.solvedGroupOrder.map(key => {
             const emoji = colorEmoji[key];
             return Array(4).fill(emoji).join('');
         }).join('\n');
