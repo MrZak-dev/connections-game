@@ -568,7 +568,7 @@ class ConnectionsGame {
             return Array(4).fill(emoji).join('');
         }).join('\n');
 
-        const shareText = `Connections\nPuzzle #${this.puzzleNumber}\n${grid}`;
+        const shareText = `Connections NYT\nPuzzle #${this.puzzleNumber}\n${grid}`;
 
         navigator.clipboard.writeText(shareText).then(() => {
             console.log('Clipboard write successful');
