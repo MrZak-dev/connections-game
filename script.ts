@@ -13,6 +13,7 @@ interface Puzzle {
 }
 
 class ConnectionsGame {
+    private readonly WEBSITE_URL = 'https://connectionsnyt.co.uk/';
     private puzzles: Puzzle[] = [];
     private currentPuzzle: Puzzle | null = null;
     private puzzleNumber: number | null = null;
@@ -575,7 +576,7 @@ class ConnectionsGame {
             return Array(4).fill(emoji).join('');
         }).join('\n');
 
-        const shareText = `Connections NYT\nPuzzle #${this.puzzleNumber}\n${grid}`;
+        const shareText = `Connections NYT\nPuzzle #${this.puzzleNumber}\n${grid}\n${this.WEBSITE_URL}`;
 
         navigator.clipboard.writeText(shareText).then(() => {
             console.log('Clipboard write successful');
