@@ -162,58 +162,39 @@
                     </button>
                 </div>
                 <div class="max-h-[80vh] overflow-y-auto pr-4">
-                    <p class="mb-6">Group words that share a common thread.</p>
-                    <div class="flex items-start mb-4">
-                        <span class="material-symbols-outlined text-4xl mr-4">search</span>
-                        <div>
-                            <h3 class="font-bold">Find Groups of Four</h3>
-                            <p>Identify four items that have something in common. Categories can be anything from book titles to words that start with the same letter.</p>
-                        </div>
+                    <p class="mb-4">Find groups of four words that share something in common. For example, the words below can be grouped into two categories:</p>
+                    <div class="grid grid-cols-4 gap-2 text-center my-4">
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">APPLE</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">DAFFODIL</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">ROSE</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">GOOGLE</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">AMAZON</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">TULIP</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">META</div>
+                        <div class="flex h-16 w-full cursor-pointer items-center justify-center rounded-lg bg-gray-200 p-2 text-center text-sm font-bold uppercase tracking-wider">LILY</div>
                     </div>
-                    <div class="flex items-start mb-4">
-                        <span class="material-symbols-outlined text-4xl mr-4">check_circle</span>
-                        <div>
-                            <h3 class="font-bold">Select & Submit</h3>
-                            <p>Tap to select four words, then tap the 'Submit' button to lock in your guess.</p>
-                        </div>
+                    
+                    <h3 class="font-bold my-4">Category Examples</h3>
+                    <p class="mb-4">Categories can be anything from types of flowers to tech companies.</p>
+
+                    <div class="bg-connections-green p-4 rounded-lg mb-2">
+                        <p class="font-bold">FLOWER</p>
+                        <p>DAFFODIL, LILY, ROSE, TULIP</p>
                     </div>
-                    <div class="flex items-start mb-6">
-                        <span class="material-symbols-outlined text-4xl mr-4">warning</span>
-                        <div>
-                            <h3 class="font-bold">Four Mistakes Allowed</h3>
-                            <p>You can make up to four mistakes before the game ends. Keep a close eye on your remaining attempts.</p>
-                        </div>
+                    <div class="bg-connections-blue p-4 rounded-lg mb-4">
+                        <p class="font-bold">BIG TECH COMPANIES</p>
+                        <p>AMAZON, APPLE, GOOGLE, META</p>
                     </div>
-                    <div class="bg-connections-yellow p-4 rounded-lg mb-6">
-                        <p class="font-bold">THINGS IN A FAIRY TALE</p>
-                        <p>BEANSTALK, CASTLE, OGRE, WOLF</p>
-                    </div>
-                    <p class="mb-6">Group words that share a common thread.</p>
-                    <div class="flex items-start mb-4">
-                        <span class="material-symbols-outlined text-4xl mr-4">search</span>
-                        <div>
-                            <h3 class="font-bold">Find Groups of Four</h3>
-                            <p>Identify four items that have something in common. Categories can be anything from book titles to words that start with the same letter.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start mb-4">
-                        <span class="material-symbols-outlined text-4xl mr-4">check_circle</span>
-                        <div>
-                            <h3 class="font-bold">Select & Submit</h3>
-                            <p>Tap to select four words, then tap the 'Submit' button to lock in your guess.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start mb-6">
-                        <span class="material-symbols-outlined text-4xl mr-4">warning</span>
-                        <div>
-                            <h3 class="font-bold">Four Mistakes Allowed</h3>
-                            <p>You can make up to four mistakes before the game ends. Keep a close eye on your remaining attempts.</p>
-                        </div>
-                    </div>
-                    <div class="bg-connections-yellow p-4 rounded-lg mb-6">
-                        <p class="font-bold">THINGS IN A FAIRY TALE</p>
-                        <p>BEANSTALK, CASTLE, OGRE, WOLF</p>
-                    </div>
+
+                    <h3 class="font-bold my-4">Category Difficulty</h3>
+                    <p class="mb-2">Each puzzle has four categories. The categories are color-coded by difficulty:</p>
+                    <ul>
+                        <li class="flex items-center mb-1"><div class="w-4 h-4 rounded-full mr-2 bg-connections-yellow"></div> Easiest</li>
+                        <li class="flex items-center mb-1"><div class="w-4 h-4 rounded-full mr-2 bg-connections-green"></div> Easy</li>
+                        <li class="flex items-center mb-1"><div class="w-4 h-4 rounded-full mr-2 bg-connections-blue"></div> Medium</li>
+                        <li class="flex items-center mb-1"><div class="w-4 h-4 rounded-full mr-2 bg-connections-purple"></div> Hard</li>
+                    </ul>
+                    <p class="mt-4 mb-6">You can make up to four mistakes before the game ends. Good luck!</p>
                 </div>
                 <button id="play-button" class="w-full bg-gray-800 text-white font-bold py-4 rounded-full">Play</button>
             </div>
