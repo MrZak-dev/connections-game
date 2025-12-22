@@ -2,6 +2,7 @@
   "puzzles": [
     {
       "date": "2024-07-29",
+      "puzzleNumber": 1,
       "groups": {
         "yellow": {
           "level": 1,

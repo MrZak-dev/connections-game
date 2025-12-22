@@ -1,5 +1,5 @@
 export interface GameState {
-    puzzleNumber: number;
+    puzzleNumber: number | null;
     mistakes: number;
     solvedGroups: { [key: string]: { description: string; words: string[] } };
     solvedGroupOrder: string[];

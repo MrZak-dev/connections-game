@@ -2,6 +2,7 @@ import { GameStorage, GameState } from './storage.js';
 
 interface Puzzle {
     date: string;
+    puzzleNumber: number;
     groups: {
         [key: string]: {
             level: number;
@@ -14,7 +15,7 @@ interface Puzzle {
 class ConnectionsGame {
     private puzzles: Puzzle[] = [];
     private currentPuzzle: Puzzle | null = null;
-    private puzzleNumber = 1;
+    private puzzleNumber: number | null = null;
     private words: string[] = [];
     private selectedWords: string[] = [];
     private mistakes: number = 4;
@@ -60,16 +61,18 @@ class ConnectionsGame {
     private startNewGame() {
         if (this.puzzles.length > 0) {
             this.currentPuzzle = this.puzzles[0];
-            this.puzzleNumber = 1;
+            this.puzzleNumber = this.currentPuzzle.puzzleNumber;
+
+            const puzzleDateElement = document.getElementById('puzzle-date')!;
+            puzzleDateElement.textContent = `Puzzle #${this.puzzleNumber}`;
 
             const savedState = GameStorage.loadState();
 
-            if (savedState && savedState.lastPlayed === new Date().toISOString().slice(0, 10)) {
+            if (savedState && savedState.puzzleNumber === this.puzzleNumber && savedState.lastPlayed === new Date().toISOString().slice(0, 10)) {
                 this.mistakes = savedState.mistakes;
                 this.solvedGroups = savedState.solvedGroups;
                 this.solvedGroupOrder = savedState.solvedGroupOrder;
                 this.gameState = savedState.gameState;
-                this.puzzleNumber = savedState.puzzleNumber;
                  this.words = Object.values(this.currentPuzzle.groups).flatMap(group => group.words)
                     .filter(word => !Object.values(this.solvedGroups).flatMap(g => g.words).includes(word));
                 this.renderSolvedGroups();
@@ -445,7 +448,7 @@ class ConnectionsGame {
 
     private populateEndScreen(screen: HTMLElement) {
         const puzzleNumberSpan = screen.querySelector('[id$="-puzzle-number"]');
-        if (puzzleNumberSpan) {
+        if (puzzleNumberSpan && this.puzzleNumber) {
             puzzleNumberSpan.textContent = this.puzzleNumber.toString();
         }
 
