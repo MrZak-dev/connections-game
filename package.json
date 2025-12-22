@@ -4,7 +4,7 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc && javascript-obfuscator dist --output dist --config obfuscator.json",
     "start": "live-server"
   },
   "keywords": [],
@@ -12,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "concurrently": "^9.2.1",
+    "javascript-obfuscator": "^5.1.0",
     "live-server": "^1.2.2",
     "typescript": "^5.9.3"
   },
