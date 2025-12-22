@@ -42,6 +42,7 @@ class ConnectionsGame {
     private closeHowToPlayModalButton: HTMLButtonElement = document.getElementById('close-how-to-play-modal') as HTMLButtonElement;
     private playButton: HTMLButtonElement = document.getElementById('play-button') as HTMLButtonElement;
     private closeMenuButton: HTMLButtonElement = document.getElementById('close-menu-button') as HTMLButtonElement;
+    private howToPlayMenuButton: HTMLAnchorElement = document.getElementById('how-to-play-menu-button') as HTMLAnchorElement;
 
     constructor() {
         this.loadPuzzles();
@@ -184,6 +185,7 @@ class ConnectionsGame {
         this.closeHowToPlayModalButton.addEventListener('click', () => this.toggleHowToPlayModal());
         this.playButton.addEventListener('click', () => this.toggleHowToPlayModal());
         this.closeMenuButton.addEventListener('click', () => this.toggleMenu());
+        this.howToPlayMenuButton.addEventListener('click', () => this.openHowToPlayModalFromMenu());
 
         // Add event listeners for success and failure screens
         document.querySelector('[data-testid="menu-button-success"]')?.addEventListener('click', () => this.toggleMenu());
@@ -195,6 +197,11 @@ class ConnectionsGame {
         document.getElementById('show-solution-button')?.addEventListener('click', () => this.showSolution());
         document.getElementById('view-stats-button-success')?.addEventListener('click', () => this.viewStats());
         document.getElementById('view-stats-button-failure')?.addEventListener('click', () => this.viewStats());
+    }
+
+    private openHowToPlayModalFromMenu() {
+        this.toggleMenu();
+        this.toggleHowToPlayModal();
     }
 
     private toggleMenu() {
