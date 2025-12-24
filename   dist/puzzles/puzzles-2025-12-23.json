@@ -1,0 +1,30 @@
+{
+  "puzzles": [
+    {
+      "date": "2024-12-22",
+      "puzzleNumber": 394,
+      "groups": {
+        "yellow": {
+          "level": 1,
+          "description": "INFLUX",
+          "words": ["RASH", "RUSH", "SURGE", "WAVE"]
+        },
+        "green": {
+          "level": 2,
+          "description": "SUBSEQUENT",
+          "words": ["COMING", "FOLLOWING", "FUTURE", "LATER"]
+        },
+        "blue": {
+          "level": 3,
+          "description": "KINDS OF CARDS",
+          "words": ["BUSINESS", "GREETING", "MEMBERSHIP", "PLAYING"]
+        },
+        "purple": {
+          "level": 4,
+          "description": "COLORS MINUS LAST LETTER",
+          "words": ["BROW", "CYA", "PIN", "WHIT"]
+        }
+      }
+    }
+  ]
+}
