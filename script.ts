@@ -13,7 +13,7 @@ interface Puzzle {
 }
 
 class ConnectionsGame {
-    private readonly WEBSITE_URL = 'https://connectionsnyt.co.uk/';
+    private readonly WEBSITE_URL = 'https://connectionsnyt.uk/';
     private puzzles: Puzzle[] = [];
     private currentPuzzle: Puzzle | null = null;
     private puzzleNumber: number | null = null;

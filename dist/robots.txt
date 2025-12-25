@@ -1,7 +1,7 @@
-# robots.txt for ConnectionsNYT.co.uk
+# robots.txt for ConnectionsNYT.uk
 # Allow all crawlers to access all content
 User-agent: *
 Allow: /
 
 # XML Sitemap
-Sitemap: https://connectionsnyt.co.uk/sitemap.xml
+Sitemap: https://connectionsnyt.uk/sitemap.xml
